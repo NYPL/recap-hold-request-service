@@ -1,76 +1,13 @@
-# NYPL Hold Request Service
+# NYPL ReCAP Hold Request Service
 
-[![Build Status](https://travis-ci.com/NYPL/hold-request-service.svg?token=SdfzXPhQLCqJvSzxTz1V&branch=master)](https://travis-ci.com/NYPL/hold-request-service)
-[![Coverage Status](https://coveralls.io/repos/github/NYPL/hold-request-service/badge.svg?branch=travis)](https://coveralls.io/github/NYPL/hold-request-service?branch=travis)
+[![Build Status](https://travis-ci.com/NYPL/recap-hold-request-service.svg?branch=master)](https://travis-ci.com/NYPL/recap-hold-request-service)
+[![Coverage Status](https://coveralls.io/repos/github/NYPL/recap-hold-request-service/badge.svg?branch=travis)](https://coveralls.io/github/NYPL/recap-hold-request-service?branch=travis)
 
 This package is intended to be used as a Lambda-based Hold Request Service using the [NYPL PHP Microservice Starter](https://github.com/NYPL/php-microservice-starter).
 
 This package adheres to [PSR-1](http://www.php-fig.org/psr/psr-1/), [PSR-2](http://www.php-fig.org/psr/psr-2/), and [PSR-4](http://www.php-fig.org/psr/psr-4/) (using the [Composer](https://getcomposer.org/) autoloader).
 
 ## Service Responsibilities
-
-The Hold Request Service receives a request from the Discovery interface
-and processes the intended action. A request can be for a hold in Sierra
-or ReCAP.
-
-Once the service validates the request, saves it to its database instance,
-and sends a new request to its Kinesis stream and returns a successful
-response or returns an error response.
-
-After these responsibilities are met, the contract ends and another
-service takes over or the request terminates in a response from this
-service.
-
-The Kinesis stream can be consumed in order to further process a hold
-request via a Sierra API service or ReCAP API service. These services
-will further process the hold request and make modifications, if necessary.
-These downstream services can update with information garnered from the
-APIs mentioned. These APIs can modify the Hold Request by changing its
-status.
-
-A Hold Request is governed by the following Avro 1.8.1 schema:
-
-## Schema
-~~~
-{
-  "patron": "string",
-  "requestType": "string",
-  "nyplSource": "string",
-  "recordType": "string",
-  "record": "string",
-  "pickupLocation": "string",
-  "neededBy": "string",
-  "numberOfCopies": "int",
-  "docDeliveryData": {
-    "chapterTitle": "string",
-    "emailAddress": "string",
-    "startPage": "string",
-    "endPage": "string",
-    "issue": "string",
-    "volume": "string"
-  }
-}
-~~~
-
-## Hold Request Data
-
-* recordType - (b, i, j)
-* record - identifier [bibId (b), itemId (i), volumeId (j)]
-* pickupLocation - NYPL location identifier
-* neededBy - date when hold is terminated (business rules?)
-* numberOfCopies - should always be 1 for ReCAP
-
-## ReCAP API RequestItem
-(https://uat-recap.htcinc.com:9093/swagger-ui.html#/)
-
-## ReCAP Request Data
-
-* All require requestType, itemBarcodes, patronBarcode, trackingId, bibId,
-itemOwningInstitution, requestingInstitution
-* Retrieval/Recall related: author, callNumber, deliveryLocation
-* Temp record related: titleIdentifier
-* EDD requires email
-* EDD related: startPage, endPage, volume, issue, chapterTitle
 
 ## Requirements
 
