@@ -78,6 +78,14 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     }
 
     /**
+     * @return string
+     */
+    public function getStreamName()
+    {
+        return 'RecapHoldRequestService';
+    }
+
+    /**
      * @param $id
      */
     public function setId($id)

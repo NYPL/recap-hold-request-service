@@ -1,7 +1,7 @@
 <?php
 namespace NYPL\Services;
 
-use NYPL\Services\Model\RecapHoldRequestErrorResponse;
+use NYPL\Services\Model\Response\RecapHoldRequestErrorResponse;
 use NYPL\Starter\Controller;
 use Slim\Container;
 
@@ -12,11 +12,11 @@ use Slim\Container;
  */
 class ServiceController extends Controller
 {
-    const READ_REQUEST_SCOPE = 'read:holds';
+    const READ_REQUEST_SCOPE = 'read:hold_requests';
 
-    const WRITE_REQUEST_SCOPE = 'write:holds';
+    const WRITE_REQUEST_SCOPE = 'write:hold_requests';
 
-    const GLOBAL_REQUEST_SCOPE = 'readwrite:holds';
+    const GLOBAL_REQUEST_SCOPE = 'readwrite:hold_requests';
 
     /**
      * @var Container

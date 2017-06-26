@@ -78,6 +78,14 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
     }
 
     /**
+     * @return string
+     */
+    public function getStreamName()
+    {
+        return 'RecapHoldRequestService';
+    }
+
+    /**
      * @param $id
      */
     public function setId($id)

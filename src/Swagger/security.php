@@ -9,7 +9,8 @@
  *   scopes={
  *     "openid offline_access api read:holds": "General API access",
  *     "openid offline_access api patron:read": "Patron specific API access",
- *     "openid offline_access api staff:read": "Staff specific API access"
+ *     "openid offline_access api staff:read": "Staff specific API access",
+ *     "openid offline_access api read:hold_requests": "Holds specific API access"
  *   }
  * )
  */
