@@ -1,7 +1,7 @@
 # NYPL ReCAP Hold Request Service
 
-[![Build Status](https://travis-ci.com/NYPL/recap-hold-request-service.svg?branch=master)](https://travis-ci.com/NYPL/recap-hold-request-service)
-[![Coverage Status](https://coveralls.io/repos/github/NYPL/recap-hold-request-service/badge.svg?branch=travis)](https://coveralls.io/github/NYPL/recap-hold-request-service?branch=travis)
+[![Build Status](https://travis-ci.org/NYPL/recap-hold-request-service.svg?branch=master)](https://travis-ci.org/NYPL/recap-hold-request-service)
+[![Coverage Status](https://coveralls.io/repos/github/NYPL/recap-hold-request-service/badge.svg?branch=master)](https://coveralls.io/github/NYPL/recap-hold-request-service?branch=master)
 
 This package is intended to be used as a Lambda-based Hold Request Service using the [NYPL PHP Microservice Starter](https://github.com/NYPL/php-microservice-starter).
 
