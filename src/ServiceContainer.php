@@ -16,5 +16,6 @@ class ServiceContainer extends DefaultContainer
     public function __construct()
     {
         parent::__construct();
+        $this["settings"]["displayErrorDetails"] = true;
     }
 }

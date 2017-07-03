@@ -12,21 +12,4 @@ use NYPL\Starter\Model\ModelTrait\TranslateTrait;
 class NewRecapCancelHoldRequest extends RecapCancelHoldRequestModel
 {
     use TranslateTrait;
-
-    /**
-     * @return array
-     */
-    public function getSchema()
-    {
-        return [
-            "name" => "NewRecapCancelHoldRequest",
-            "type" => "record",
-            "fields" => [
-                ["name" => "trackingId", "type" => "string"],
-                ["name" => "owningInstitutionId", "type" => "string"],
-                ["name" => "patronBarcode", "type" => "string"],
-                ["name" => "itemBarcode", "type" => "string"]
-            ]
-        ];
-    }
 }

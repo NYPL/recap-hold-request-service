@@ -19,7 +19,7 @@ class RecapHoldRequestController extends ServiceController
      * @SWG\Post(
      *     path="/v0.1/recap/hold-requests",
      *     summary="Create a new ReCAP hold request",
-     *     tags={"recap-holds-service"},
+     *     tags={"recap-hold-requests"},
      *     operationId="createRecapHoldRequest",
      *     consumes={"application/json"},
      *     produces={"application/json"},
@@ -40,6 +40,11 @@ class RecapHoldRequestController extends ServiceController
      *         description="Unauthorized"
      *     ),
      *     @SWG\Response(
+     *         response="403",
+     *         description="Forbidden",
+     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
+     *     ),
+     *     @SWG\Response(
      *         response="404",
      *         description="Not found",
      *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
@@ -51,7 +56,7 @@ class RecapHoldRequestController extends ServiceController
      *     ),
      *     security={
      *         {
-     *             "api_auth": {"openid offline_access api"}
+     *             "api_auth": {"openid offline_access api write:hold_request readwrite:hold_request"}
      *         }
      *     }
      * )
@@ -61,29 +66,41 @@ class RecapHoldRequestController extends ServiceController
      */
     public function createRecapHoldRequest()
     {
-        $data = $this->getRequest()->getParsedBody();
+        try {
+            if (!$this->hasWriteRequestScope()) {
+                return $this->invalidScopeResponse();
+            }
 
-        $holdRequest = new RecapHoldRequest($data);
+            $data = $this->getRequest()->getParsedBody();
 
-        $holdRequest->create();
+            $holdRequest = new RecapHoldRequest($data);
 
-        return $this->getResponse()->withJson(
-            new RecapHoldRequestResponse($holdRequest)
-        );
+            $holdRequest->create();
+
+            return $this->getResponse()->withJson(
+                new RecapHoldRequestResponse($holdRequest)
+            );
+        } catch(\Exception $exception) {
+            throw new APIException(
+                'An error occurred',
+                $exception->getMessage(),
+                $exception->getCode()
+            );
+        }
     }
 
     /**
      * @SWG\Post(
      *     path="/v0.1/recap/cancel-hold-requests",
      *     summary="Cancel a ReCAP hold request",
-     *     tags={"recap-holds-service"},
+     *     tags={"recap-hold-requests"},
      *     operationId="cancelRecapHoldRequest",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="NewRecapCancelHoldRequest",
      *         in="body",
-     *         description="",
+     *         description="RecapCancelHoldRequest object",
      *         required=true,
      *         @SWG\Schema(ref="#/definitions/NewRecapCancelHoldRequest")
      *     ),
@@ -91,6 +108,15 @@ class RecapHoldRequestController extends ServiceController
      *         response=200,
      *         description="Successful operation",
      *         @SWG\Schema(ref="#/definitions/RecapHoldRequestResponse")
+     *     ),
+     *     @SWG\Response(
+     *         response="401",
+     *         description="Unauthorized"
+     *     ),
+     *     @SWG\Response(
+     *         response="403",
+     *         description="Forbidden",
+     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
      *     ),
      *     @SWG\Response(
      *         response="404",
@@ -104,9 +130,9 @@ class RecapHoldRequestController extends ServiceController
      *     ),
      *     security={
      *         {
-     *             "api_auth": {"openid offline_access api"}
+     *             "api_auth": {"openid offline_access api write:hold_request readwrite:hold_request"}
      *         }
-     *     }s
+     *     }
      * )
      *
      * @return Response
@@ -114,14 +140,26 @@ class RecapHoldRequestController extends ServiceController
      */
     public function cancelRecapHoldRequest()
     {
-        $data = $this->getRequest()->getParsedBody();
+        try {
+            if (!$this->hasWriteRequestScope()) {
+                return $this->invalidScopeResponse();
+            }
 
-        $cancelHoldRequest = new RecapCancelHoldRequest($data);
+            $data = $this->getRequest()->getParsedBody();
 
-        $cancelHoldRequest->create();
+            $cancelHoldRequest = new RecapCancelHoldRequest($data);
 
-        return $this->getResponse()->withJson(
-            new RecapHoldRequestResponse($cancelHoldRequest)
-        );
+            $cancelHoldRequest->create();
+
+            return $this->getResponse()->withJson(
+                new RecapHoldRequestResponse($cancelHoldRequest)
+            );
+        } catch(\Exception $exception) {
+            throw new APIException(
+                'An error occurred',
+                $exception->getMessage(),
+                $exception->getCode()
+            );
+        }
     }
 }

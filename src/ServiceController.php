@@ -1,7 +1,7 @@
 <?php
 namespace NYPL\Services;
 
-use NYPL\Services\Model\RecapHoldRequestErrorResponse;
+use NYPL\Services\Model\Response\RecapHoldRequestErrorResponse;
 use NYPL\Starter\Controller;
 use Slim\Container;
 
@@ -12,11 +12,11 @@ use Slim\Container;
  */
 class ServiceController extends Controller
 {
-    const READ_REQUEST_SCOPE = 'read:holds';
+    const READ_REQUEST_SCOPE = 'read:hold_request';
 
-    const WRITE_REQUEST_SCOPE = 'write:holds';
+    const WRITE_REQUEST_SCOPE = 'write:hold_request';
 
-    const GLOBAL_REQUEST_SCOPE = 'readwrite:holds';
+    const GLOBAL_REQUEST_SCOPE = 'readwrite:hold_request';
 
     /**
      * @var Container
@@ -59,19 +59,28 @@ class ServiceController extends Controller
         $this->container = $container;
     }
 
-    public function hasReadRequestScope()
+    /**
+     * @return bool
+     */
+    public function hasReadRequestScope(): bool
     {
-        return in_array(self::READ_REQUEST_SCOPE, $this->identityHeader->getScopes()) || $this->hasGlobalRequestScope();
+        return in_array(self::READ_REQUEST_SCOPE, (array) $this->identityHeader->getScopes()) || $this->hasGlobalRequestScope();
     }
 
-    public function hasWriteRequestScope()
+    /**
+     * @return bool
+     */
+    public function hasWriteRequestScope(): bool
     {
-        return in_array(self::WRITE_REQUEST_SCOPE, $this->identityHeader->getScopes()) || $this->hasGlobalRequestScope();
+        return in_array(self::WRITE_REQUEST_SCOPE, (array) $this->identityHeader->getScopes()) || $this->hasGlobalRequestScope();
     }
 
-    protected function hasGlobalRequestScope()
+    /**
+     * @return bool
+     */
+    protected function hasGlobalRequestScope(): bool
     {
-        return in_array(self::GLOBAL_REQUEST_SCOPE, $this->identityHeader->getScopes());
+        return in_array(self::GLOBAL_REQUEST_SCOPE, (array) $this->identityHeader->getScopes());
     }
 
     /**
@@ -85,6 +94,6 @@ class ServiceController extends Controller
                 'invalid-scope',
                 'Client does not have sufficient privileges.'
             )
-        );
+        )->withStatus(403);
     }
 }
