@@ -40,6 +40,11 @@ class RecapHoldRequestController extends ServiceController
      *         description="Unauthorized"
      *     ),
      *     @SWG\Response(
+     *         response="403",
+     *         description="Forbidden",
+     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
+     *     ),
+     *     @SWG\Response(
      *         response="404",
      *         description="Not found",
      *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
@@ -51,7 +56,7 @@ class RecapHoldRequestController extends ServiceController
      *     ),
      *     security={
      *         {
-     *             "api_auth": {"openid offline_access api write:hold_requests readwrite:hold_requests"}
+     *             "api_auth": {"openid offline_access api write:hold_request readwrite:hold_request"}
      *         }
      *     }
      * )
@@ -105,6 +110,15 @@ class RecapHoldRequestController extends ServiceController
      *         @SWG\Schema(ref="#/definitions/RecapHoldRequestResponse")
      *     ),
      *     @SWG\Response(
+     *         response="401",
+     *         description="Unauthorized"
+     *     ),
+     *     @SWG\Response(
+     *         response="403",
+     *         description="Forbidden",
+     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
+     *     ),
+     *     @SWG\Response(
      *         response="404",
      *         description="Not found",
      *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
@@ -116,7 +130,7 @@ class RecapHoldRequestController extends ServiceController
      *     ),
      *     security={
      *         {
-     *             "api_auth": {"openid offline_access api write:hold_requests readwrite:hold_requests"}
+     *             "api_auth": {"openid offline_access api write:hold_request readwrite:hold_request"}
      *         }
      *     }
      * )

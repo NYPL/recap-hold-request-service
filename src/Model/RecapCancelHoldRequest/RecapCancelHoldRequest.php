@@ -55,8 +55,8 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
                 ["name" => "patronBarcode", "type" => "string"],
                 ["name" => "itemBarcode", "type" => "string"],
                 ["name" => "owningInstitutionId", "type" => "string"],
-                ["name" => "createdDate", "type" => ["string", "null"]],
-                ["name" => "updatedDate", "type" => ["string", "null"]]
+                ["name" => "createdDate", "type" => ["null", "string"]],
+                ["name" => "updatedDate", "type" => ["null", "string"]]
             ]
         ];
     }
