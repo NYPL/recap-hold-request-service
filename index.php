@@ -15,7 +15,7 @@ try {
 
     $service = new Service($container);
 
-    $service->get('/docs', Swagger::class);
+    $service->get('/docs/recap-hold-requests', Swagger::class);
 
     $service->post(
         '/api/v0.1/recap/hold-requests',

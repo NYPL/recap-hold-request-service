@@ -44,17 +44,18 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
             "type" => "record",
             "fields" => [
                 ["name" => "id", "type" => "int"],
-                ["name" => "trackingId", "type" => "string"],
-                ["name" => "patronBarcode", "type" => "string"],
-                ["name" => "itemBarcode", "type" => "string"],
+                ["name" => "trackingId", "type" => ["string", "null"]],
+                ["name" => "patronBarcode", "type" => ["string", "null"]],
+                ["name" => "itemBarcode", "type" => ["string", "null"]],
                 ["name" => "createdDate", "type" => ["string", "null"]],
                 ["name" => "updatedDate", "type" => ["string", "null"]],
-                ["name" => "owningInstitutionId", "type" => "string"],
+                ["name" => "owningInstitutionId", "type" => ["string", "null"]],
                 ["name" => "description", "type" => [
+                    "null",
                     ["name" => "description", "type" => "record", "fields" => [
-                        ["name" => "title", "type" => "string"],
-                        ["name" => "author", "type" => "string"],
-                        ["name" => "callNumber", "type" => "string"],
+                        ["name" => "title", "type" => ["string", "null"]],
+                        ["name" => "author", "type" => ["string", "null"]],
+                        ["name" => "callNumber", "type" => ["string", "null"]],
                     ]]
                 ]],
             ]

@@ -1,11 +1,15 @@
 <?php
 namespace NYPL\Services\Controller;
 
+use NYPL\Services\JobService;
 use NYPL\Services\ServiceController;
 use NYPL\Services\Model\RecapHoldRequest\RecapHoldRequest;
 use NYPL\Services\Model\RecapCancelHoldRequest\RecapCancelHoldRequest;
 use NYPL\Services\Model\Response\RecapHoldRequestResponse;
+use NYPL\Services\Model\Response\RecapCancelHoldRequestResponse;
 use NYPL\Starter\APIException;
+use NYPL\Starter\APILogger;
+use NYPL\Starter\Config;
 use Slim\Http\Response;
 
 /**
@@ -19,7 +23,7 @@ class RecapHoldRequestController extends ServiceController
      * @SWG\Post(
      *     path="/v0.1/recap/hold-requests",
      *     summary="Create a new ReCAP hold request",
-     *     tags={"recap-holds-service"},
+     *     tags={"recap-hold-requests"},
      *     operationId="createRecapHoldRequest",
      *     consumes={"application/json"},
      *     produces={"application/json"},
@@ -42,12 +46,12 @@ class RecapHoldRequestController extends ServiceController
      *     @SWG\Response(
      *         response="404",
      *         description="Not found",
-     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
+     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
      *     ),
      *     @SWG\Response(
      *         response="500",
      *         description="Generic server error",
-     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
+     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
      *     ),
      *     security={
      *         {
@@ -76,7 +80,7 @@ class RecapHoldRequestController extends ServiceController
      * @SWG\Post(
      *     path="/v0.1/recap/cancel-hold-requests",
      *     summary="Cancel a ReCAP hold request",
-     *     tags={"recap-holds-service"},
+     *     tags={"recap-hold-requests"},
      *     operationId="cancelRecapHoldRequest",
      *     consumes={"application/json"},
      *     produces={"application/json"},
@@ -90,23 +94,23 @@ class RecapHoldRequestController extends ServiceController
      *     @SWG\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestResponse")
+     *         @SWG\Schema(ref="#/definitions/RecapCancelHoldRequestResponse")
      *     ),
      *     @SWG\Response(
      *         response="404",
      *         description="Not found",
-     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
+     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
      *     ),
      *     @SWG\Response(
      *         response="500",
      *         description="Generic server error",
-     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
+     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
      *     ),
      *     security={
      *         {
      *             "api_auth": {"openid offline_access api"}
      *         }
-     *     }s
+     *     }
      * )
      *
      * @return Response
@@ -116,12 +120,14 @@ class RecapHoldRequestController extends ServiceController
     {
         $data = $this->getRequest()->getParsedBody();
 
+        $data['jobId'] = JobService::generateJobId(Config::get('USE_JOB_SERVICE'));
+
         $cancelHoldRequest = new RecapCancelHoldRequest($data);
 
         $cancelHoldRequest->create();
 
         return $this->getResponse()->withJson(
-            new RecapHoldRequestResponse($cancelHoldRequest)
+            new RecapCancelHoldRequestResponse($cancelHoldRequest)
         );
     }
 }

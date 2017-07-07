@@ -3,8 +3,8 @@
  * @SWG\SecurityScheme(
  *   securityDefinition="api_auth",
  *   type="oauth2",
- *   authorizationUrl="http://sso.tld/authorize",
- *   tokenUrl="http://sso.tld/token",
+ *   authorizationUrl="http://isso.nypl.org/oauth/authorize",
+ *   tokenUrl="http://isso.nypl.org/oauth/token",
  *   flow="accessCode",
  *   scopes={
  *     "openid offline_access api read:holds": "General API access",
