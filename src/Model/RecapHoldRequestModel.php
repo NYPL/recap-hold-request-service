@@ -124,11 +124,11 @@ abstract class RecapHoldRequestModel extends Model
     }
 
     /**
-     * @param array $data
+     * @param array|string $data
      *
      * @return ItemDescription
      */
-    public function translateDescription(array $data)
+    public function translateDescription($data)
     {
         return new ItemDescription($data, true);
     }
