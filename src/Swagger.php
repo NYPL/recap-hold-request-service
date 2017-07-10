@@ -16,8 +16,8 @@ class Swagger extends ServiceController
     public function __invoke()
     {
         return SwaggerGenerator::generate(
-          [__DIR__],
-          $this->response
+            [__DIR__],
+            $this->response
         );
     }
 }

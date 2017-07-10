@@ -8,7 +8,6 @@ use NYPL\Services\Model\RecapCancelHoldRequest\RecapCancelHoldRequest;
 use NYPL\Services\Model\Response\RecapHoldRequestResponse;
 use NYPL\Services\Model\Response\RecapCancelHoldRequestResponse;
 use NYPL\Starter\APIException;
-use NYPL\Starter\APILogger;
 use NYPL\Starter\Config;
 use Slim\Http\Response;
 
@@ -55,7 +54,7 @@ class RecapHoldRequestController extends ServiceController
      *     ),
      *     security={
      *         {
-     *             "api_auth": {"openid offline_access api"}
+     *             "api_auth": {"openid offline_access api readwrite:hold_request"}
      *         }
      *     }
      * )
@@ -108,7 +107,7 @@ class RecapHoldRequestController extends ServiceController
      *     ),
      *     security={
      *         {
-     *             "api_auth": {"openid offline_access api"}
+     *             "api_auth": {"openid offline_access api readwrite:hold_request"}
      *         }
      *     }
      * )

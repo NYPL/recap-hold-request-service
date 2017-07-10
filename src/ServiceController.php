@@ -1,8 +1,8 @@
 <?php
 namespace NYPL\Services;
 
-use NYPL\Services\Model\RecapHoldRequestErrorResponse;
 use NYPL\Starter\Controller;
+use NYPL\Starter\Model\Response\ErrorResponse;
 use Slim\Container;
 
 /**
@@ -12,11 +12,11 @@ use Slim\Container;
  */
 class ServiceController extends Controller
 {
-    const READ_REQUEST_SCOPE = 'read:holds';
+    const READ_REQUEST_SCOPE = 'read:hold_request';
 
-    const WRITE_REQUEST_SCOPE = 'write:holds';
+    const WRITE_REQUEST_SCOPE = 'write:hold_request';
 
-    const GLOBAL_REQUEST_SCOPE = 'readwrite:holds';
+    const GLOBAL_REQUEST_SCOPE = 'readwrite:hold_request';
 
     /**
      * @var Container
@@ -29,7 +29,7 @@ class ServiceController extends Controller
      * @param \Slim\Container $container
      * @param int $cacheSeconds
      */
-    public function __construct(Container $container, $cacheSeconds = 0)
+    public function __construct(Container $container, int $cacheSeconds = 0)
     {
         $this->setResponse($container->get('response'));
         $this->setRequest($container->get('request'));
@@ -54,19 +54,26 @@ class ServiceController extends Controller
     /**
      * @param Container $container
      */
-    public function setContainer($container)
+    public function setContainer(Container $container)
     {
         $this->container = $container;
     }
 
     public function hasReadRequestScope()
     {
-        return in_array(self::READ_REQUEST_SCOPE, $this->identityHeader->getScopes()) || $this->hasGlobalRequestScope();
+        return in_array(
+            self::READ_REQUEST_SCOPE,
+            $this->identityHeader->getScopes()
+        )
+        || $this->hasGlobalRequestScope();
     }
 
     public function hasWriteRequestScope()
     {
-        return in_array(self::WRITE_REQUEST_SCOPE, $this->identityHeader->getScopes()) || $this->hasGlobalRequestScope();
+        return in_array(
+            self::WRITE_REQUEST_SCOPE, $this->identityHeader->getScopes()
+        )
+        || $this->hasGlobalRequestScope();
     }
 
     protected function hasGlobalRequestScope()
@@ -80,11 +87,11 @@ class ServiceController extends Controller
     public function invalidScopeResponse()
     {
         return $this->getResponse()->withJson(
-            new RecapHoldRequestErrorResponse(
+            new ErrorResponse(
                 '403',
                 'invalid-scope',
                 'Client does not have sufficient privileges.'
             )
-        );
+        )->withStatus(403);
     }
 }

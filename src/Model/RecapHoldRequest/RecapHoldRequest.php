@@ -35,6 +35,8 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
     public $updatedDate;
 
     /**
+     * Returns a valid Avro 1.8.1 schema structure.
+     *
      * @return array
      */
     public function getSchema()
@@ -105,7 +107,7 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
     /**
      * @param LocalDateTime $createdDate
      */
-    public function setCreatedDate($createdDate)
+    public function setCreatedDate(LocalDateTime $createdDate)
     {
         $this->createdDate = $createdDate;
     }
@@ -115,7 +117,7 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
      *
      * @return LocalDateTime
      */
-    public function translateCreatedDate($createdDate = '')
+    public function translateCreatedDate(string $createdDate = '')
     {
         return new LocalDateTime(LocalDateTime::FORMAT_DATE_TIME_RFC, $createdDate);
     }
@@ -131,7 +133,7 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
     /**
      * @param LocalDateTime $updatedDate
      */
-    public function setUpdatedDate($updatedDate)
+    public function setUpdatedDate(LocalDateTime $updatedDate)
     {
         $this->updatedDate = $updatedDate;
     }
@@ -141,7 +143,7 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
      *
      * @return LocalDateTime
      */
-    public function translateUpdatedDate($updatedDate = '')
+    public function translateUpdatedDate(string $updatedDate = '')
     {
         return new LocalDateTime(LocalDateTime::FORMAT_DATE_TIME_RFC, $updatedDate);
     }

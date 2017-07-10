@@ -34,7 +34,7 @@ class ItemDescription extends Model
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getTitle()
     {
         return $this->title;
     }
@@ -50,7 +50,7 @@ class ItemDescription extends Model
     /**
      * @return string
      */
-    public function getAuthor(): string
+    public function getAuthor()
     {
         return $this->author;
     }
@@ -66,7 +66,7 @@ class ItemDescription extends Model
     /**
      * @return string
      */
-    public function getCallNumber(): string
+    public function getCallNumber()
     {
         return $this->callNumber;
     }

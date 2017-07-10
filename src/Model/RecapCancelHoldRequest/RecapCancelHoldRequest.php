@@ -41,6 +41,8 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     public $updatedDate;
 
     /**
+     * Returns a valid Avro 1.8.1 schema structure.
+     *
      * @return array
      */
     public function getSchema()
@@ -78,7 +80,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     }
 
     /**
-     * @param $id
+     * @param int|string $id
      */
     public function setId($id)
     {
@@ -120,7 +122,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     /**
      * @param LocalDateTime $createdDate
      */
-    public function setCreatedDate($createdDate)
+    public function setCreatedDate(LocalDateTime $createdDate)
     {
         $this->createdDate = $createdDate;
     }
@@ -130,7 +132,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
      *
      * @return LocalDateTime
      */
-    public function translateCreatedDate($createdDate = '')
+    public function translateCreatedDate(string $createdDate = '')
     {
         return new LocalDateTime(LocalDateTime::FORMAT_DATE_TIME_RFC, $createdDate);
     }
@@ -146,7 +148,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     /**
      * @param LocalDateTime $updatedDate
      */
-    public function setUpdatedDate($updatedDate)
+    public function setUpdatedDate(LocalDateTime $updatedDate)
     {
         $this->updatedDate = $updatedDate;
     }
@@ -156,7 +158,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
      *
      * @return LocalDateTime
      */
-    public function translateUpdatedDate($updatedDate = '')
+    public function translateUpdatedDate(string $updatedDate = '')
     {
         return new LocalDateTime(LocalDateTime::FORMAT_DATE_TIME_RFC, $updatedDate);
     }

@@ -46,7 +46,7 @@ abstract class RecapHoldRequestModel extends Model
     /**
      * @return string
      */
-    public function getTrackingId(): string
+    public function getTrackingId()
     {
         return $this->trackingId;
     }
@@ -62,7 +62,7 @@ abstract class RecapHoldRequestModel extends Model
     /**
      * @return string
      */
-    public function getPatronBarcode(): string
+    public function getPatronBarcode()
     {
         return $this->patronBarcode;
     }
@@ -78,7 +78,7 @@ abstract class RecapHoldRequestModel extends Model
     /**
      * @return string
      */
-    public function getOwningInstitutionId(): string
+    public function getOwningInstitutionId()
     {
         return $this->owningInstitutionId;
     }
@@ -94,7 +94,7 @@ abstract class RecapHoldRequestModel extends Model
     /**
      * @return string
      */
-    public function getItemBarcode(): string
+    public function getItemBarcode()
     {
         return $this->itemBarcode;
     }
@@ -128,7 +128,7 @@ abstract class RecapHoldRequestModel extends Model
      *
      * @return ItemDescription
      */
-    public function translateDescription($data)
+    public function translateDescription(array $data)
     {
         return new ItemDescription($data, true);
     }
