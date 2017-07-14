@@ -54,7 +54,7 @@ abstract class RecapHoldRequestModel extends Model
     /**
      * @param string $trackingId
      */
-    public function setTrackingId(string $trackingId)
+    public function setTrackingId($trackingId)
     {
         $this->trackingId = $trackingId;
     }
@@ -70,7 +70,7 @@ abstract class RecapHoldRequestModel extends Model
     /**
      * @param string $patronBarcode
      */
-    public function setPatronBarcode(string $patronBarcode)
+    public function setPatronBarcode($patronBarcode)
     {
         $this->patronBarcode = $patronBarcode;
     }
@@ -86,7 +86,7 @@ abstract class RecapHoldRequestModel extends Model
     /**
      * @param string $owningInstitutionId
      */
-    public function setOwningInstitutionId(string $owningInstitutionId)
+    public function setOwningInstitutionId($owningInstitutionId)
     {
         $this->owningInstitutionId = $owningInstitutionId;
     }
@@ -102,7 +102,7 @@ abstract class RecapHoldRequestModel extends Model
     /**
      * @param string $itemBarcode
      */
-    public function setItemBarcode(string $itemBarcode)
+    public function setItemBarcode($itemBarcode)
     {
         $this->itemBarcode = $itemBarcode;
     }
@@ -110,7 +110,7 @@ abstract class RecapHoldRequestModel extends Model
     /**
      * @param ItemDescription $description
      */
-    public function setDescription(ItemDescription $description)
+    public function setDescription($description)
     {
         $this->description = $description;
     }

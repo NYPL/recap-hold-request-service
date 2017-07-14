@@ -27,7 +27,7 @@ class ServiceController extends Controller
      * Controller constructor.
      *
      * @param \Slim\Container $container
-     * @param int $cacheSeconds
+     * @param int             $cacheSeconds
      */
     public function __construct(Container $container, int $cacheSeconds = 0)
     {

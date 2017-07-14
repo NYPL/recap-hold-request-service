@@ -45,12 +45,12 @@ class RecapHoldRequestController extends ServiceController
      *     @SWG\Response(
      *         response="404",
      *         description="Not found",
-     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
+     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
      *     ),
      *     @SWG\Response(
      *         response="500",
      *         description="Generic server error",
-     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
+     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
      *     ),
      *     security={
      *         {
@@ -98,12 +98,12 @@ class RecapHoldRequestController extends ServiceController
      *     @SWG\Response(
      *         response="404",
      *         description="Not found",
-     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
+     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
      *     ),
      *     @SWG\Response(
      *         response="500",
      *         description="Generic server error",
-     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestErrorResponse")
+     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
      *     ),
      *     security={
      *         {

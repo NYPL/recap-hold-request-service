@@ -19,8 +19,8 @@ class JobService
     public static $jobId;
 
     /**
-     * @param bool $useJobManager
-     * @throws \NYPL\Starter\APIException
+     * @param  bool         $useJobManager
+     * @throws APIException
      * @return string
      */
     public static function generateJobId(bool $useJobManager = true): string

@@ -16,7 +16,7 @@ class Swagger extends ServiceController
     public function __invoke()
     {
         return SwaggerGenerator::generate(
-            [__DIR__],
+            [__DIR__, __DIR__ . '/../vendor/nypl/microservice-starter/src'],
             $this->response
         );
     }

@@ -40,7 +40,7 @@ abstract class RecapCancelHoldRequestModel extends Model
     /**
      * @return string
      */
-    public function getTrackingId(): string
+    public function getTrackingId()
     {
         return $this->trackingId;
     }
@@ -48,7 +48,7 @@ abstract class RecapCancelHoldRequestModel extends Model
     /**
      * @param string $trackingId
      */
-    public function setTrackingId(string $trackingId)
+    public function setTrackingId($trackingId)
     {
         $this->trackingId = $trackingId;
     }
@@ -56,7 +56,7 @@ abstract class RecapCancelHoldRequestModel extends Model
     /**
      * @return string
      */
-    public function getPatronBarcode(): string
+    public function getPatronBarcode()
     {
         return $this->patronBarcode;
     }
@@ -64,7 +64,7 @@ abstract class RecapCancelHoldRequestModel extends Model
     /**
      * @param string $patronBarcode
      */
-    public function setPatronBarcode(string $patronBarcode)
+    public function setPatronBarcode($patronBarcode)
     {
         $this->patronBarcode = $patronBarcode;
     }
@@ -72,7 +72,7 @@ abstract class RecapCancelHoldRequestModel extends Model
     /**
      * @return string
      */
-    public function getOwningInstitutionId(): string
+    public function getOwningInstitutionId()
     {
         return $this->owningInstitutionId;
     }
@@ -80,7 +80,7 @@ abstract class RecapCancelHoldRequestModel extends Model
     /**
      * @param string $owningInstitutionId
      */
-    public function setOwningInstitutionId(string $owningInstitutionId)
+    public function setOwningInstitutionId($owningInstitutionId)
     {
         $this->owningInstitutionId = $owningInstitutionId;
     }
@@ -88,7 +88,7 @@ abstract class RecapCancelHoldRequestModel extends Model
     /**
      * @return string
      */
-    public function getItemBarcode(): string
+    public function getItemBarcode()
     {
         return $this->itemBarcode;
     }
@@ -96,7 +96,7 @@ abstract class RecapCancelHoldRequestModel extends Model
     /**
      * @param string $itemBarcode
      */
-    public function setItemBarcode(string $itemBarcode)
+    public function setItemBarcode($itemBarcode)
     {
         $this->itemBarcode = $itemBarcode;
     }

@@ -42,8 +42,8 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
     public function getSchema()
     {
         return [
-            "name" => "RecapHoldRequest",
-            "type" => "record",
+            "name"   => "RecapHoldRequest",
+            "type"   => "record",
             "fields" => [
                 ["name" => "id", "type" => "int"],
                 ["name" => "trackingId", "type" => ["string", "null"]],
@@ -52,14 +52,21 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
                 ["name" => "createdDate", "type" => ["string", "null"]],
                 ["name" => "updatedDate", "type" => ["string", "null"]],
                 ["name" => "owningInstitutionId", "type" => ["string", "null"]],
-                ["name" => "description", "type" => [
-                    "null",
-                    ["name" => "description", "type" => "record", "fields" => [
-                        ["name" => "title", "type" => ["string", "null"]],
-                        ["name" => "author", "type" => ["string", "null"]],
-                        ["name" => "callNumber", "type" => ["string", "null"]],
-                    ]]
-                ]],
+                [
+                    "name" => "description",
+                    "type" => [
+                        "null",
+                        [
+                            "name"   => "description",
+                            "type"   => "record",
+                            "fields" => [
+                                ["name" => "title", "type" => ["string", "null"]],
+                                ["name" => "author", "type" => ["string", "null"]],
+                                ["name" => "callNumber", "type" => ["string", "null"]],
+                            ]
+                        ]
+                    ]
+                ],
             ]
         ];
     }
@@ -85,7 +92,7 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
      */
     public function setId($id)
     {
-        $this->id = (int) $id;
+        $this->id = (int)$id;
     }
 
     /**
@@ -107,7 +114,7 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
     /**
      * @param LocalDateTime $createdDate
      */
-    public function setCreatedDate(LocalDateTime $createdDate)
+    public function setCreatedDate($createdDate)
     {
         $this->createdDate = $createdDate;
     }
@@ -117,7 +124,7 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
      *
      * @return LocalDateTime
      */
-    public function translateCreatedDate(string $createdDate = '')
+    public function translateCreatedDate($createdDate = '')
     {
         return new LocalDateTime(LocalDateTime::FORMAT_DATE_TIME_RFC, $createdDate);
     }
@@ -133,7 +140,7 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
     /**
      * @param LocalDateTime $updatedDate
      */
-    public function setUpdatedDate(LocalDateTime $updatedDate)
+    public function setUpdatedDate($updatedDate)
     {
         $this->updatedDate = $updatedDate;
     }
@@ -143,7 +150,7 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
      *
      * @return LocalDateTime
      */
-    public function translateUpdatedDate(string $updatedDate = '')
+    public function translateUpdatedDate($updatedDate = '')
     {
         return new LocalDateTime(LocalDateTime::FORMAT_DATE_TIME_RFC, $updatedDate);
     }

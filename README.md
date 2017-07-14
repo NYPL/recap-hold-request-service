@@ -96,3 +96,6 @@ Create a Swagger route to generate Swagger specification documentation:
 ~~~~
 $service->get("/swagger", SwaggerGenerator::class);
 ~~~~
+
+
+{\"owningInstitutionId\":\"PUL\",\"itemBarcode\":\"33333259898217\",\"patronBarcode\":\"43333095887111\",\"trackingId\":\"94481\",\"description\":{\"title\":\"Some sing, some cry\",\"author\":\"Ifa Bayeza\",\"callNumber\":\"|h*ONPA 84-446\"}}

@@ -48,17 +48,17 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     public function getSchema()
     {
         return [
-            "name" => "RecapCancelHoldRequest",
-            "type" => "record",
+            "name"   => "RecapCancelHoldRequest",
+            "type"   => "record",
             "fields" => [
                 ["name" => "id", "type" => "int"],
-                ["name" => "jobId", "type" => "string"],
-                ["name" => "trackingId", "type" => "string"],
-                ["name" => "patronBarcode", "type" => "string"],
-                ["name" => "itemBarcode", "type" => "string"],
-                ["name" => "owningInstitutionId", "type" => "string"],
-                ["name" => "createdDate", "type" => ["string", "null"]],
-                ["name" => "updatedDate", "type" => ["string", "null"]]
+                ["name" => "jobId", "type" => ["null", "string"]],
+                ["name" => "trackingId", "type" => ["null", "string"]],
+                ["name" => "patronBarcode", "type" => ["null", "string"]],
+                ["name" => "itemBarcode", "type" => ["null", "string"]],
+                ["name" => "owningInstitutionId", "type" => ["null", "string"]],
+                ["name" => "createdDate", "type" => ["null", "string"]],
+                ["name" => "updatedDate", "type" => ["null", "string"]]
             ]
         ];
     }
@@ -79,12 +79,17 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
         return ['id'];
     }
 
+    public function getStreamName()
+    {
+        return 'RecapCancelHoldRequest';
+    }
+
     /**
      * @param int|string $id
      */
     public function setId($id)
     {
-        $this->id = (int) $id;
+        $this->id = (int)$id;
     }
 
     /**
@@ -98,7 +103,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     /**
      * @return string
      */
-    public function getJobId(): string
+    public function getJobId()
     {
         return $this->jobId;
     }
@@ -106,7 +111,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     /**
      * @param string $jobId
      */
-    public function setJobId(string $jobId)
+    public function setJobId($jobId)
     {
         $this->jobId = $jobId;
     }
@@ -122,7 +127,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     /**
      * @param LocalDateTime $createdDate
      */
-    public function setCreatedDate(LocalDateTime $createdDate)
+    public function setCreatedDate($createdDate)
     {
         $this->createdDate = $createdDate;
     }
@@ -132,7 +137,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
      *
      * @return LocalDateTime
      */
-    public function translateCreatedDate(string $createdDate = '')
+    public function translateCreatedDate($createdDate = '')
     {
         return new LocalDateTime(LocalDateTime::FORMAT_DATE_TIME_RFC, $createdDate);
     }
@@ -148,7 +153,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     /**
      * @param LocalDateTime $updatedDate
      */
-    public function setUpdatedDate(LocalDateTime $updatedDate)
+    public function setUpdatedDate($updatedDate)
     {
         $this->updatedDate = $updatedDate;
     }
@@ -158,7 +163,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
      *
      * @return LocalDateTime
      */
-    public function translateUpdatedDate(string $updatedDate = '')
+    public function translateUpdatedDate($updatedDate = '')
     {
         return new LocalDateTime(LocalDateTime::FORMAT_DATE_TIME_RFC, $updatedDate);
     }
