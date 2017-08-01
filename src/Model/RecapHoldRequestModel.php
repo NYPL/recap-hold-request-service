@@ -20,16 +20,16 @@ abstract class RecapHoldRequestModel extends Model
     public $trackingId;
 
     /**
-     * @SWG\Property(example="34333000000000")
-     * @var string
-     */
-    public $itemBarcode;
-
-    /**
      * @SWG\Property(example="23333000000000")
      * @var string
      */
     public $patronBarcode;
+
+    /**
+     * @SWG\Property(example="34333000000000")
+     * @var string
+     */
+    public $itemBarcode;
 
     /**
      * @SWG\Property(example="PUL")

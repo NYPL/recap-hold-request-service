@@ -52,9 +52,7 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
                 ["name" => "createdDate", "type" => ["string", "null"]],
                 ["name" => "updatedDate", "type" => ["string", "null"]],
                 ["name" => "owningInstitutionId", "type" => ["string", "null"]],
-                [
-                    "name" => "description",
-                    "type" => [
+                ["name" => "description", "type" => [
                         "null",
                         [
                             "name"   => "description",
@@ -120,11 +118,11 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
     }
 
     /**
-     * @param string $createdDate
+     * @param null|string $createdDate
      *
      * @return LocalDateTime
      */
-    public function translateCreatedDate($createdDate = '')
+    public function translateCreatedDate($createdDate)
     {
         return new LocalDateTime(LocalDateTime::FORMAT_DATE_TIME_RFC, $createdDate);
     }
@@ -146,11 +144,11 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
     }
 
     /**
-     * @param string $updatedDate
+     * @param null|string $updatedDate
      *
      * @return LocalDateTime
      */
-    public function translateUpdatedDate($updatedDate = '')
+    public function translateUpdatedDate($updatedDate)
     {
         return new LocalDateTime(LocalDateTime::FORMAT_DATE_TIME_RFC, $updatedDate);
     }
