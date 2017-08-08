@@ -1,8 +1,9 @@
 {
-  "name": "nypl-hold-request-service",
-  "description": "NYPL Hold Request Service Package",
+  "name": "recap-hold-request-service",
+  "description": "NYPL ReCAP Hold Request Service Package",
   "require": {
-    "nypl/microservice-starter": "1.0.9"
+    "nypl/microservice-starter": "1.0.40",
+    "ramsey/uuid": "3.6.1"
   },
   "require-dev": {
     "phpunit/phpunit": "6.2.1",
@@ -11,11 +12,13 @@
   },
   "autoload": {
     "psr-4": {
-      "NYPL\\Services\\": [ "src/", "tests/" ]
+      "NYPL\\Services\\": [ "src/" ],
+      "NYPL\\Services\\Test\\": [ "tests/" ]
     }
   },
   "scripts": {
     "post-update-cmd": [
+      "php -r \"copy('vendor/nypl/microservice-starter/scripts/parser.js', 'parser.js');\"",
       "php -r \"copy('vendor/nypl/microservice-starter/scripts/index.js', 'index.js');\""
     ]
   }

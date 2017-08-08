@@ -9,6 +9,7 @@ use NYPL\Services\Model\Response\RecapHoldRequestResponse;
 use NYPL\Services\Model\Response\RecapCancelHoldRequestResponse;
 use NYPL\Starter\APIException;
 use NYPL\Starter\Config;
+use NYPL\Starter\Model\Response\ErrorResponse;
 use Slim\Http\Response;
 
 /**
@@ -64,15 +65,24 @@ class RecapHoldRequestController extends ServiceController
      */
     public function createRecapHoldRequest()
     {
-        $data = $this->getRequest()->getParsedBody();
+        try {
+            $data = $this->getRequest()->getParsedBody();
+            $holdRequest = new RecapHoldRequest($data);
+            $holdRequest->create();
 
-        $holdRequest = new RecapHoldRequest($data);
-
-        $holdRequest->create();
-
-        return $this->getResponse()->withJson(
-            new RecapHoldRequestResponse($holdRequest)
-        );
+            return $this->getResponse()->withJson(
+                new RecapHoldRequestResponse($holdRequest)
+            );
+        } catch (\Exception $exception) {
+            $errorResp = new ErrorResponse(
+                500,
+                'create-recap-hold-request-error',
+                'An error occurred while trying to process your request.',
+                $exception
+            );
+            $errorResp->setError($errorResp->translateException($exception));
+            return $this->getResponse()->withJson($errorResp)->withStatus(500);
+        }
     }
 
     /**
@@ -117,16 +127,25 @@ class RecapHoldRequestController extends ServiceController
      */
     public function cancelRecapHoldRequest()
     {
-        $data = $this->getRequest()->getParsedBody();
+        try {
+            $data = $this->getRequest()->getParsedBody();
+            $data['jobId'] = JobService::generateJobId(Config::get('USE_JOB_SERVICE'));
 
-        $data['jobId'] = JobService::generateJobId(Config::get('USE_JOB_SERVICE'));
+            $cancelHoldRequest = new RecapCancelHoldRequest($data);
+            $cancelHoldRequest->create();
 
-        $cancelHoldRequest = new RecapCancelHoldRequest($data);
-
-        $cancelHoldRequest->create();
-
-        return $this->getResponse()->withJson(
-            new RecapCancelHoldRequestResponse($cancelHoldRequest)
-        );
+            return $this->getResponse()->withJson(
+                new RecapCancelHoldRequestResponse($cancelHoldRequest)
+            );
+        } catch (\Exception $exception) {
+            $errorResp = new ErrorResponse(
+                500,
+                'cancel-recap-hold-request-error',
+                'An error occurred while trying to process your request.',
+                $exception
+            );
+            $errorResp->setError($errorResp->translateException($exception));
+            return $this->getResponse()->withJson($errorResp)->withStatus(500);
+        }
     }
 }
