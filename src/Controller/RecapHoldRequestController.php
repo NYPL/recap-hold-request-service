@@ -8,8 +8,10 @@ use NYPL\Services\Model\RecapCancelHoldRequest\RecapCancelHoldRequest;
 use NYPL\Services\Model\Response\RecapHoldRequestResponse;
 use NYPL\Services\Model\Response\RecapCancelHoldRequestResponse;
 use NYPL\Starter\APIException;
+use NYPL\Starter\APILogger;
 use NYPL\Starter\Config;
 use NYPL\Starter\Model\Response\ErrorResponse;
+use Slim\Http\Request;
 use Slim\Http\Response;
 
 /**
@@ -68,20 +70,17 @@ class RecapHoldRequestController extends ServiceController
         try {
             $data = $this->getRequest()->getParsedBody();
             $holdRequest = new RecapHoldRequest($data);
+            APILogger::addDebug('Processing hold request from ReCAP', $data);
             $holdRequest->create();
 
             return $this->getResponse()->withJson(
                 new RecapHoldRequestResponse($holdRequest)
             );
         } catch (\Exception $exception) {
-            $errorResp = new ErrorResponse(
-                500,
-                'create-recap-hold-request-error',
-                'An error occurred while trying to process your request.',
-                $exception
-            );
-            $errorResp->setError($errorResp->translateException($exception));
-            return $this->getResponse()->withJson($errorResp)->withStatus(500);
+            $errorType = 'recap-hold-request-error';
+            $errorMsg = 'Unable to process ReCAP hold request. ' . $exception->getMessage();
+
+            return $this->processException($errorType, $errorMsg, $exception, $this->getRequest());
         }
     }
 
@@ -129,23 +128,62 @@ class RecapHoldRequestController extends ServiceController
     {
         try {
             $data = $this->getRequest()->getParsedBody();
-            $data['jobId'] = JobService::generateJobId(Config::get('USE_JOB_SERVICE'));
+            $data['jobId'] = JobService::generateJobId($this->isUseJobService());
 
             $cancelHoldRequest = new RecapCancelHoldRequest($data);
+            APILogger::addDebug('Processing cancel hold request from ReCAP', $data);
             $cancelHoldRequest->create();
 
             return $this->getResponse()->withJson(
                 new RecapCancelHoldRequestResponse($cancelHoldRequest)
             );
         } catch (\Exception $exception) {
-            $errorResp = new ErrorResponse(
-                500,
-                'cancel-recap-hold-request-error',
-                'An error occurred while trying to process your request.',
-                $exception
-            );
-            $errorResp->setError($errorResp->translateException($exception));
-            return $this->getResponse()->withJson($errorResp)->withStatus(500);
+            $errorType = 'recap-cancel-hold-request-error';
+            $errorMsg = 'Unable to cancel ReCAP hold request. ' . $exception->getMessage();
+
+            return $this->processException($errorType, $errorMsg, $exception, $this->getRequest());
         }
+    }
+
+    /**
+     * @param string     $errorType
+     * @param string     $errorMessage
+     * @param \Exception $exception
+     * @param Request    $request
+     * @return \Slim\Http\Response
+     */
+    protected function processException($errorType, $errorMessage, \Exception $exception, Request $request)
+    {
+        $statusCode = 500;
+        if ($exception instanceof APIException) {
+            $statusCode = $exception->getHttpCode();
+        }
+
+        APILogger::addLog(
+            $statusCode,
+            get_class($exception) . ': ' . $exception->getMessage(),
+            [
+                $request->getHeaderLine('X-NYPL-Log-Stream-Name'),
+                $request->getHeaderLine('X-NYPL-Request-ID'),
+                (string) $request->getUri(),
+                $request->getParsedBody()
+            ]
+        );
+
+        if ($exception instanceof APIException) {
+            if ($exception->getPrevious()) {
+                $exception->setDebugInfo($exception->getPrevious()->getMessage());
+            }
+            APILogger::addDebug('APIException debug info.', [$exception->debugInfo]);
+        }
+
+        $errorResp = new ErrorResponse(
+            $statusCode,
+            $errorType,
+            $errorMessage,
+            $exception
+        );
+
+        return $this->getResponse()->withJson($errorResp)->withStatus($statusCode);
     }
 }
