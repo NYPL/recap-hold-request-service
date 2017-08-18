@@ -1,6 +1,7 @@
 <?php
 namespace NYPL\Services\Model\RecapCancelHoldRequest;
 
+use NYPL\Starter\Config;
 use NYPL\Starter\Model\LocalDateTime;
 use NYPL\Starter\Model\ModelInterface\MessageInterface;
 use NYPL\Starter\Model\ModelInterface\ReadInterface;
@@ -81,7 +82,7 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
 
     public function getStreamName()
     {
-        return 'RecapCancelHoldRequest';
+        return Config::get('CANCEL_REQUEST_STREAM');
     }
 
     /**
