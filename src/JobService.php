@@ -247,7 +247,9 @@ class JobService
     protected static function buildJobNotice(array $data, $notice = '')
     {
         $jobNotice = new JobNoticeCreated();
-        $jobNotice->setData($data);
+        $jobNotice->setData([
+            'jobId' => $data['jobId']
+        ]);
         $jobNotice->setText($notice);
         APILogger::addDebug('Job notice created.', $data);
 

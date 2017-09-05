@@ -70,7 +70,7 @@ class RecapHoldRequestController extends ServiceController
         try {
             $data = $this->getRequest()->getParsedBody();
             $holdRequest = new RecapHoldRequest($data);
-            APILogger::addInfo('Processing hold request from ReCAP', $data);
+            APILogger::addInfo('Processing hold request from ReCAP', ['jobId' => $data['trackingId']]);
             $holdRequest->create();
 
             return $this->getResponse()->withJson(
@@ -131,7 +131,7 @@ class RecapHoldRequestController extends ServiceController
             $data['jobId'] = JobService::generateJobId($this->isUseJobService());
 
             $cancelHoldRequest = new RecapCancelHoldRequest($data);
-            APILogger::addInfo('Processing cancel hold request from ReCAP', $data);
+            APILogger::addInfo('Processing cancel hold request from ReCAP', ['Request ID' => $data['trackingId']]);
             $cancelHoldRequest->create();
 
             return $this->getResponse()->withJson(
