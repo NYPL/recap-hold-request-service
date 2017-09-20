@@ -27,6 +27,11 @@ try {
         RecapHoldRequestController::class . ':cancelRecapHoldRequest'
     );
 
+    $service->patch(
+        '/api/v0.1/recap/cancel-hold-requests/{id}',
+        RecapHoldRequestController::class . ':updateCancelRecapHoldRequest'
+    );
+
     $service->run();
 } catch (\Exception $exception) {
     ErrorHandler::processShutdownError($exception->getMessage(), $exception);

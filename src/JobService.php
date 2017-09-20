@@ -219,23 +219,38 @@ class JobService
     public static function finishJob(RecapCancelHoldRequest $recapCancelHoldRequest)
     {
         self::initializeJobClient();
+        $recapCancelHoldRequest->read();
         $data = $recapCancelHoldRequest->getRawData();
 
         try {
-            self::buildJobNotice($data, self::JOB_SUCCESS_MESSAGE);
-            self::getJobStatusSuccess()->setNotice(self::getJobNotice());
+            if ($recapCancelHoldRequest->isSuccess()) {
+                self::buildJobNotice($data, self::JOB_SUCCESS_MESSAGE . ' (CancelID: ' . $recapCancelHoldRequest->getId() . ')');
+                self::getJobStatusSuccess()->setNotice(self::getJobNotice());
 
-            APILogger::addDebug(
-                'Success status sent to the Job Service API. (ID: ' . $recapCancelHoldRequest->getId() . ')'
-            );
+                APILogger::addDebug(
+                    'Success status sent to the Job Service API. (CancelID: ' . $recapCancelHoldRequest->getId() . ')'
+                );
 
-            self::getJobClient()->success(
-                new Job(['id' => $recapCancelHoldRequest->getJobId()]),
-                self::getJobStatusSuccess()
-            );
+                self::getJobClient()->success(
+                    new Job(['id' => $recapCancelHoldRequest->getJobId()]),
+                    self::getJobStatusSuccess()
+                );
+            } else {
+                self::buildJobNotice($data, self::JOB_FAILURE_MESSAGE . ' (CancelID: ' . $recapCancelHoldRequest->getId() . ')');
+                self::getJobStatus()->setNotice(self::getJobNotice());
+
+                APILogger::addDebug(
+                    'Failure status sent to the Job Service API. (CancelID: ' . $recapCancelHoldRequest->getId() . ')'
+                );
+
+                self::getJobClient()->failure(
+                    new Job(['id' => $recapCancelHoldRequest->getJobId()]),
+                    self::getJobStatus()
+                );
+            }
         } catch (\Exception $exception) {
             APILogger::addInfo(
-                'Job threw an exception. ' . $exception->getMessage() . '. (ID: ' . $recapCancelHoldRequest->getId() . ')'
+                'Job threw an exception. ' . $exception->getMessage() . '. (CancelID: ' . $recapCancelHoldRequest->getId() . ')'
             );
         }
     }

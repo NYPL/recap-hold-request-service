@@ -29,7 +29,7 @@ Homebrew is highly recommended for PHP:
    * If you have not already installed `node-lambda` as a global package, run `npm install -g node-lambda`.
 3. Setup [configuration](#configuration) files.
    * Copy the `.env.sample` file to `.env`.
-   * Copy `config/var_qa.env.sample` to `config/var_qa.env` and `config/var_production.env.sample` to `config/var_production.env`.
+   * Copy `config/var_qa.env.sample` to `config/var_qa.env` and `config/var_env.sample` to `config/var_production.env`.
 
 ## Configuration
 

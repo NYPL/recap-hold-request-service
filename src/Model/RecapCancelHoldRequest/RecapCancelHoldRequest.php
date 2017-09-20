@@ -1,12 +1,15 @@
 <?php
 namespace NYPL\Services\Model\RecapCancelHoldRequest;
 
+use NYPL\Starter\APIException;
+use NYPL\Starter\APILogger;
 use NYPL\Starter\Config;
 use NYPL\Starter\Model\LocalDateTime;
 use NYPL\Starter\Model\ModelInterface\MessageInterface;
 use NYPL\Starter\Model\ModelInterface\ReadInterface;
 use NYPL\Starter\Model\ModelTrait\DBCreateTrait;
 use NYPL\Starter\Model\ModelTrait\DBReadTrait;
+use NYPL\Starter\Model\ModelTrait\DBUpdateTrait;
 
 /**
  * @SWG\Definition(title="RecapCancelHoldRequest", type="object")
@@ -15,7 +18,7 @@ use NYPL\Starter\Model\ModelTrait\DBReadTrait;
  */
 class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements MessageInterface, ReadInterface
 {
-    use DBCreateTrait, DBReadTrait;
+    use DBCreateTrait, DBReadTrait, DBUpdateTrait;
 
     /**
      * @SWG\Property(example="229")
@@ -28,6 +31,18 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
      * @var string
      */
     public $jobId;
+
+    /**
+     * @SWG\Property(example=true)
+     * @var bool
+     */
+    public $processed;
+
+    /**
+     * @SWG\Property(example=false)
+     * @var bool
+     */
+    public $success;
 
     /**
      * @SWG\Property(example="2016-01-07T02:32:51Z", type="string")
@@ -58,6 +73,8 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
                 ["name" => "patronBarcode", "type" => ["null", "string"]],
                 ["name" => "itemBarcode", "type" => ["null", "string"]],
                 ["name" => "owningInstitutionId", "type" => ["null", "string"]],
+                ["name" => "processed", "type" => "boolean"],
+                ["name" => "success", "type" => "boolean"],
                 ["name" => "createdDate", "type" => ["null", "string"]],
                 ["name" => "updatedDate", "type" => ["null", "string"]]
             ]
@@ -118,6 +135,38 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     }
 
     /**
+     * @return boolean
+     */
+    public function isProcessed(): bool
+    {
+        return $this->processed;
+    }
+
+    /**
+     * @param boolean $processed
+     */
+    public function setProcessed(bool $processed)
+    {
+        $this->processed = $processed;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSuccess(): bool
+    {
+        return $this->success;
+    }
+
+    /**
+     * @param boolean $success
+     */
+    public function setSuccess(bool $success)
+    {
+        $this->success = $success;
+    }
+
+    /**
      * @return LocalDateTime
      */
     public function getCreatedDate()
@@ -167,5 +216,20 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     public function translateUpdatedDate($updatedDate = '')
     {
         return new LocalDateTime(LocalDateTime::FORMAT_DATE_TIME_RFC, $updatedDate);
+    }
+
+    /**
+     * @throws \NYPL\Starter\APIException
+     */
+    public function validatePatchData(array $data)
+    {
+        APILogger::addDebug('Validating PATCH request payload.', $data);
+
+        if (!is_bool($data['success']) || !is_bool($data['processed'])) {
+            APILogger::addError('Success and processed flags must be boolean values.');
+            throw new APIException('Success and processed must be boolean values.', null, 0, null, 400);
+        }
+
+        APILogger::addDebug('PATCH request payload validation passed.');
     }
 }

@@ -10,6 +10,7 @@ use NYPL\Services\Model\Response\RecapCancelHoldRequestResponse;
 use NYPL\Starter\APIException;
 use NYPL\Starter\APILogger;
 use NYPL\Starter\Config;
+use NYPL\Starter\Filter;
 use NYPL\Starter\Model\Response\ErrorResponse;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -69,12 +70,12 @@ class RecapHoldRequestController extends ServiceController
     {
         try {
             $data = $this->getRequest()->getParsedBody();
-            $holdRequest = new RecapHoldRequest($data);
-            APILogger::addInfo('Processing hold request from ReCAP', ['jobId' => $data['trackingId']]);
-            $holdRequest->create();
+            $recapHoldRequest = new RecapHoldRequest($data);
+            APILogger::addInfo('Processing hold request from ReCAP', ['Request ID' => $data['trackingId']]);
+            $recapHoldRequest->create();
 
             return $this->getResponse()->withJson(
-                new RecapHoldRequestResponse($holdRequest)
+                new RecapHoldRequestResponse($recapHoldRequest)
             );
         } catch (\Exception $exception) {
             $errorType = 'recap-hold-request-error';
@@ -129,19 +130,125 @@ class RecapHoldRequestController extends ServiceController
         try {
             $data = $this->getRequest()->getParsedBody();
             $data['jobId'] = JobService::generateJobId($this->isUseJobService());
+            $data['success'] = $data['processed'] = false;
 
-            $cancelHoldRequest = new RecapCancelHoldRequest($data);
-            APILogger::addInfo('Processing cancel hold request from ReCAP', ['Request ID' => $data['trackingId']]);
-            $cancelHoldRequest->create();
+            APILogger::addDebug('POST request sent.', $data);
+
+            $recapCancelHoldRequest = new RecapCancelHoldRequest($data);
+            APILogger::addInfo('Processing cancel hold request from ReCAP');
+            $recapCancelHoldRequest->create();
+
+            if ($this->isUseJobService()) {
+                APILogger::addDebug('Initiating job via Job Service API.', ['jobID' => $recapCancelHoldRequest->getJobId()]);
+                JobService::beginJob(
+                    $recapCancelHoldRequest,
+                    'Job started for hold request. (CancelID: ' . $recapCancelHoldRequest->getId() . ')'
+                );
+            }
 
             return $this->getResponse()->withJson(
-                new RecapCancelHoldRequestResponse($cancelHoldRequest)
+                new RecapCancelHoldRequestResponse($recapCancelHoldRequest)
             );
         } catch (\Exception $exception) {
-            $errorType = 'recap-cancel-hold-request-error';
+            $errorType = 'cancel-recap-hold-request-error';
             $errorMsg = 'Unable to cancel ReCAP hold request. ' . $exception->getMessage();
 
             return $this->processException($errorType, $errorMsg, $exception, $this->getRequest());
+        }
+    }
+
+    /**
+     * @SWG\Patch(
+     *     path="/v0.1/recap/cancel-hold-requests/{id}",
+     *     summary="Update a hold request",
+     *     tags={"hold-requests"},
+     *     operationId="updateHoldRequest",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         description="ID of ReCAP cancel hold request",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         type="string",
+     *         format="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="RecapCancelHoldRequest",
+     *         in="body",
+     *         required=true,
+     *         @SWG\Schema(ref="#/definitions/RecapCancelHoldRequest")
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @SWG\Schema(ref="#/definitions/RecapCancelHoldRequestResponse")
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="Not found",
+     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
+     *     ),
+     *     @SWG\Response(
+     *         response="500",
+     *         description="Generic server error",
+     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
+     *     ),
+     *     security={
+     *         {
+     *             "api_auth": {"openid offline_access api"}
+     *         }
+     *     }
+     * )
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     *
+     * @return Response
+     */
+    public function updateCancelRecapHoldRequest(Request $request, Response $response, array $args)
+    {
+        try {
+            $data = $this->getRequest()->getParsedBody();
+
+            $recapCancelHoldRequest = new RecapCancelHoldRequest();
+
+            APILogger::addDebug('Raw PATCH request sent.', [(string)$request->getUri(), $request->getParsedBody()]);
+            APILogger::addDebug('PATCH request sent.', [(string)$request->getUri(), $data]);
+
+            try {
+                $recapCancelHoldRequest->validatePatchData((array)$data);
+            } catch (APIException $exception) {
+                return $this->invalidRequestResponse($exception);
+            }
+
+            $recapCancelHoldRequest->addFilter(new Filter('id', $args['id']));
+            $recapCancelHoldRequest->read();
+
+            $recapCancelHoldRequest->update(
+                $this->getRequest()->getParsedBody()
+            );
+
+            APILogger::addDebug('Database record updated.');
+
+            if ($this->isUseJobService()) {
+                APILogger::addDebug('Updating an existing job.', ['jobID' => $recapCancelHoldRequest->getJobId()]);
+                JobService::finishJob($recapCancelHoldRequest);
+            }
+
+            APILogger::addDebug(
+                'PATCH response',
+                (array)$this->getResponse()->withJson(new RecapCancelHoldRequestResponse($recapCancelHoldRequest))
+            );
+
+            return $this->getResponse()->withJson(new RecapCancelHoldRequestResponse($recapCancelHoldRequest));
+        } catch (\Exception $exception) {
+            APILogger::addDebug('Exception thrown.', [$exception->getMessage()]);
+            $errorType = 'update-cancel-recap-hold-request-error';
+            $errorMsg = 'Unable to update canceled recap hold request.';
+
+            return $this->processException($errorType, $errorMsg, $exception, $request);
         }
     }
 
