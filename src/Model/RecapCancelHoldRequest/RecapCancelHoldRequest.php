@@ -1,6 +1,7 @@
 <?php
 namespace NYPL\Services\Model\RecapCancelHoldRequest;
 
+use NYPL\Services\CancelRequestLogger;
 use NYPL\Starter\APIException;
 use NYPL\Starter\APILogger;
 use NYPL\Starter\Config;
@@ -223,13 +224,13 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
      */
     public function validatePatchData(array $data)
     {
-        APILogger::addDebug('Validating PATCH request payload.', $data);
+        CancelRequestLogger::addDebug('Validating PATCH request payload.', $data);
 
         if (!is_bool($data['success']) || !is_bool($data['processed'])) {
-            APILogger::addError('Success and processed flags must be boolean values.');
+            CancelRequestLogger::addError('Success and processed flags must be boolean values.');
             throw new APIException('Success and processed must be boolean values.', null, 0, null, 400);
         }
 
-        APILogger::addDebug('PATCH request payload validation passed.');
+        CancelRequestLogger::addDebug('PATCH request payload validation passed.');
     }
 }

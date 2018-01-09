@@ -20,7 +20,6 @@ use Ramsey\Uuid\Uuid;
 class JobService
 {
     const JOB_SUCCESS_MESSAGE = 'Job finished successfully for hold request.';
-
     const JOB_FAILURE_MESSAGE = 'Job finished unsuccessfully for hold request.';
 
     /**
@@ -220,7 +219,7 @@ class JobService
     {
         self::initializeJobClient();
         $recapCancelHoldRequest->read();
-        $data = $recapCancelHoldRequest->getRawData();
+        $data = (array)$recapCancelHoldRequest;
 
         try {
             if ($recapCancelHoldRequest->isSuccess()) {

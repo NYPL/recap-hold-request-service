@@ -1,6 +1,7 @@
 <?php
 namespace NYPL\Services\Controller;
 
+use NYPL\Services\CancelRequestLogger;
 use NYPL\Services\JobService;
 use NYPL\Services\ServiceController;
 use NYPL\Services\Model\RecapHoldRequest\RecapHoldRequest;
@@ -9,7 +10,6 @@ use NYPL\Services\Model\Response\RecapHoldRequestResponse;
 use NYPL\Services\Model\Response\RecapCancelHoldRequestResponse;
 use NYPL\Starter\APIException;
 use NYPL\Starter\APILogger;
-use NYPL\Starter\Config;
 use NYPL\Starter\Filter;
 use NYPL\Starter\Model\Response\ErrorResponse;
 use Slim\Http\Request;
@@ -132,17 +132,18 @@ class RecapHoldRequestController extends ServiceController
             $data['jobId'] = JobService::generateJobId($this->isUseJobService());
             $data['success'] = $data['processed'] = false;
 
-            APILogger::addDebug('POST request sent.', $data);
+            CancelRequestLogger::addDebug('POST request sent.', $data);
 
             $recapCancelHoldRequest = new RecapCancelHoldRequest($data);
-            APILogger::addInfo('Processing cancel hold request from ReCAP');
             $recapCancelHoldRequest->create();
 
+            CancelRequestLogger::addInfo('Processing cancel hold request from ReCAP. (CancelRequestId: ' . $recapCancelHoldRequest->getId() . ')');
+
             if ($this->isUseJobService()) {
-                APILogger::addDebug('Initiating job via Job Service API.', ['jobID' => $recapCancelHoldRequest->getJobId()]);
+                CancelRequestLogger::addDebug('Initiating job via Job Service API.', ['jobID' => $recapCancelHoldRequest->getJobId()]);
                 JobService::beginJob(
                     $recapCancelHoldRequest,
-                    'Job started for hold request. (CancelID: ' . $recapCancelHoldRequest->getId() . ')'
+                    'Job started for hold request. (CancelRequestID: ' . $recapCancelHoldRequest->getId() . ')'
                 );
             }
 
@@ -160,9 +161,9 @@ class RecapHoldRequestController extends ServiceController
     /**
      * @SWG\Patch(
      *     path="/v0.1/recap/cancel-hold-requests/{id}",
-     *     summary="Update a hold request",
-     *     tags={"hold-requests"},
-     *     operationId="updateHoldRequest",
+     *     summary="Update a ReCAP cancel hold request",
+     *     tags={"recap-hold-requests"},
+     *     operationId="updateCancelRecapHoldRequest",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -214,8 +215,8 @@ class RecapHoldRequestController extends ServiceController
 
             $recapCancelHoldRequest = new RecapCancelHoldRequest();
 
-            APILogger::addDebug('Raw PATCH request sent.', [(string)$request->getUri(), $request->getParsedBody()]);
-            APILogger::addDebug('PATCH request sent.', [(string)$request->getUri(), $data]);
+            CancelRequestLogger::addDebug('Raw PATCH request sent.', [(string)$request->getUri(), $request->getParsedBody()]);
+            CancelRequestLogger::addDebug('PATCH request sent.', [(string)$request->getUri(), $data]);
 
             try {
                 $recapCancelHoldRequest->validatePatchData((array)$data);
@@ -230,21 +231,22 @@ class RecapHoldRequestController extends ServiceController
                 $this->getRequest()->getParsedBody()
             );
 
-            APILogger::addDebug('Database record updated.');
+            // TODO: Change back to debug after testing.
+            CancelRequestLogger::addInfo('Cancel request database record updated. (CancelRequestId: ' . $recapCancelHoldRequest->getId() . ')');
 
             if ($this->isUseJobService()) {
-                APILogger::addDebug('Updating an existing job.', ['jobID' => $recapCancelHoldRequest->getJobId()]);
+                CancelRequestLogger::addDebug('Updating an existing job.', ['jobID' => $recapCancelHoldRequest->getJobId()]);
                 JobService::finishJob($recapCancelHoldRequest);
             }
 
-            APILogger::addDebug(
+            CancelRequestLogger::addDebug(
                 'PATCH response',
                 (array)$this->getResponse()->withJson(new RecapCancelHoldRequestResponse($recapCancelHoldRequest))
             );
 
             return $this->getResponse()->withJson(new RecapCancelHoldRequestResponse($recapCancelHoldRequest));
         } catch (\Exception $exception) {
-            APILogger::addDebug('Exception thrown.', [$exception->getMessage()]);
+            CancelRequestLogger::addDebug('Exception thrown.', [$exception->getMessage()]);
             $errorType = 'update-cancel-recap-hold-request-error';
             $errorMsg = 'Unable to update canceled recap hold request.';
 
