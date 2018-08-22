@@ -14,25 +14,25 @@ abstract class RecapHoldRequestModel extends Model
     use TranslateTrait;
 
     /**
-     * @SWG\Property(example="901bdd1d-bd8f-4310-ba31-7f13a55877fd")
+     * @SWG\Property(example="51336")
      * @var string
      */
     public $trackingId;
 
     /**
-     * @SWG\Property(example="23333000000000")
+     * @SWG\Property(example="23333107857201")
      * @var string
      */
     public $patronBarcode;
 
     /**
-     * @SWG\Property(example="34333000000000")
+     * @SWG\Property(example="33433083079578")
      * @var string
      */
     public $itemBarcode;
 
     /**
-     * @SWG\Property(example="PUL")
+     * @SWG\Property(example="NYPL")
      * @var string
      */
     public $owningInstitutionId;
