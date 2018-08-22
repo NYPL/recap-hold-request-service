@@ -14,19 +14,19 @@ class ItemDescription extends Model
     use TranslateTrait;
 
     /**
-     * @SWG\Property(example="Some sing, some cry")
+     * @SWG\Property(example="[In Library Use] REFLECTIONS OF CARTIER : THE ART DECO YEARS : NEW YORK EXHIBITION. [RECAP]")
      * @var string
      */
     public $title;
 
     /**
-     * @SWG\Property(example="Ifa Bayeza")
+     * @SWG\Property(example="Cartier, Louis, 1875-1942.   ")
      * @var string
      */
     public $author;
 
     /**
-     * @SWG\Property(example="|h*ONPA 84-446")
+     * @SWG\Property(example="|hJAX C-3278")
      * @var string
      */
     public $callNumber;
