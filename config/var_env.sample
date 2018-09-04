@@ -1,4 +1,20 @@
+JOB_SERVICE_URL=https://platform.nypl.org/api/v0.1/jobs
+SLACK_USERNAME=RecapHoldRequestService-[env]
+DEFAULT_LOGGING_LEVEL=info
+API_BASE_URL=https://platform.nypl.org/api/v0.1/
+DB_CONNECT_STRING=[db connect string]
 DB_USERNAME=root
-# This parameters should be encrypted using KMS
+IDENTITY_HEADER=X-NYPL-Identity
+SLACK_CHANNEL=service-logging
+CANCEL_REQUEST_STREAM=RecapCancelHoldRequest-[env]
+SLACK_LOGGING_LEVEL=info
+USE_JOB_SERVICE='1'
+SWAGGER_HOST=platformdocs.nypl.org
+TIME_ZONE=America/New_York
+SLACK_CHANNEL_ALT=cancel-req-logging
+DEFAULT_STREAM=RecapHoldRequest-[env]
+SCHEMA_BASE_URL=https://platform.nypl.org/api/v0.1/current-schemas
+
+# These parameters should be encrypted using KMS
 SLACK_TOKEN=ABC...
 DB_PASSWORD=DEF...
