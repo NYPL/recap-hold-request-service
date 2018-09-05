@@ -1,6 +1,12 @@
 language:
 - php
 - node_js
+install: npm install
+cache:
+  directories:
+    - node_modules
+before_deploy:
+  - echo "All unit tests passed; Preparing to deploy $TRAVIS_BRANCH"
 php:
 - 7.1
 script:
@@ -17,6 +23,7 @@ deploy:
   on:
     all_branches: true
     condition: $TRAVIS_BRANCH =~ ^development|qa|production$
+after_deploy: echo "Successfully executed deploy trigger for $TRAVIS_BRANCH"
 env:
   global:
   - secure: LEcSAqpTK9uAuU32jOcQ9x9P9jGn3XeXYD+7+xuIadLv7zp50tAcWDT28J14KH9NI+jzRIdCZxuE5y8TcreYaDO/R0u318Xvmt1zyprbRR8c3dNTipVqjrGPt7cUvK++p7K7LvJQMDzeS5JynsO2dPSTVafrwrzbeuTnd6OTR21/KSY0ETWTV2msFzDK/qIAy92bEiwmBbIMaZAea3VzrAW70RYIc2yFE6EEmPb17RmREg9tjin4u0JP7cVaqHJa8ulBw+s77D6guoqmSQ+sZdOoP7QbeXXZGxjWA5LAeyvMg58U4uPfwrgw+eVXTR2FzRsA3DlB4GiyRgOJtSqNlqk+nckFgTflGdoqouenI24irGoFcgaZjbmPnGrrbDRkAvTq/nNgLKIWOrvNfabTyJtlcNgUg5HVMEakt11mDkFd5n57oYacF0T0Heln4WcKq4JWwUsdoF/bsv4aFk7HRRnxezyzlsHSSSGXZo78CcZO38GFPAbmwHNHFfJIJIet0SDUsLzA4AYnRsJw6WBh2TS3AJKnW3P17FSwdyrWVQT6aJEfGZmfMcWS3iQvvo2M3yflHKHVplMNXHD9euFCEled41mIWJi+LSdIg2ChfiAQ3WR0IoP6TfDdPs1ws/AtWK63FN5F0u76FBevnWYZYAbZXAqyL+NtxloIQm5k1NM=
