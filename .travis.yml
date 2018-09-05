@@ -16,13 +16,15 @@ after_success:
 - vendor/bin/coveralls -v
 - vendor/bin/phpcs -n --standard=PSR1,PSR2 src/
 - vendor/bin/phpcbf src/
+- ENVIRONMENT_NAME=$TRAVIS_BRANCH
+- if [ "$TRAVIS_BRANCH" == "master" ]; then ENVIRONMENT_NAME=production; fi
 deploy:
 - provider: script
   skip_cleanup: true
-  script: ./scripts/travis-deploy.sh $TRAVIS_BRANCH
+  script: ./scripts/travis-deploy.sh $ENVIRONMENT_NAME
   on:
     all_branches: true
-    condition: $TRAVIS_BRANCH =~ ^development|qa|production$
+    condition: $ENVIRONMENT_NAME =~ ^development|qa|production$
 after_deploy: echo "Successfully executed deploy trigger for $TRAVIS_BRANCH"
 env:
   global:
