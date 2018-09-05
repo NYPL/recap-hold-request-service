@@ -1,10 +1,22 @@
 language: php
 php:
-  - 7.1
+- 7.1
 script:
-  - composer update
-  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+- composer update
+- vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 after_success:
-  - vendor/bin/coveralls -v
-  - vendor/bin/phpcs -n --standard=PSR1,PSR2 src/
-  - vendor/bin/phpcbf src/
+- vendor/bin/coveralls -v
+- vendor/bin/phpcs -n --standard=PSR1,PSR2 src/
+- vendor/bin/phpcbf src/
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: ./scripts/travis-deploy.sh $TRAVIS_BRANCH
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^development|qa|production$ 
+env:
+  global:
+  - secure: LEcSAqpTK9uAuU32jOcQ9x9P9jGn3XeXYD+7+xuIadLv7zp50tAcWDT28J14KH9NI+jzRIdCZxuE5y8TcreYaDO/R0u318Xvmt1zyprbRR8c3dNTipVqjrGPt7cUvK++p7K7LvJQMDzeS5JynsO2dPSTVafrwrzbeuTnd6OTR21/KSY0ETWTV2msFzDK/qIAy92bEiwmBbIMaZAea3VzrAW70RYIc2yFE6EEmPb17RmREg9tjin4u0JP7cVaqHJa8ulBw+s77D6guoqmSQ+sZdOoP7QbeXXZGxjWA5LAeyvMg58U4uPfwrgw+eVXTR2FzRsA3DlB4GiyRgOJtSqNlqk+nckFgTflGdoqouenI24irGoFcgaZjbmPnGrrbDRkAvTq/nNgLKIWOrvNfabTyJtlcNgUg5HVMEakt11mDkFd5n57oYacF0T0Heln4WcKq4JWwUsdoF/bsv4aFk7HRRnxezyzlsHSSSGXZo78CcZO38GFPAbmwHNHFfJIJIet0SDUsLzA4AYnRsJw6WBh2TS3AJKnW3P17FSwdyrWVQT6aJEfGZmfMcWS3iQvvo2M3yflHKHVplMNXHD9euFCEled41mIWJi+LSdIg2ChfiAQ3WR0IoP6TfDdPs1ws/AtWK63FN5F0u76FBevnWYZYAbZXAqyL+NtxloIQm5k1NM=
+  - secure: DGYypOpo5Dv7+uvdese6K9FRnzsmsmi5NRDhdgLEH/kwUJuNZ7gKW8Y24JotkllHWZaG4M+/RzewYZQZG1Xzelg4R3d7ONUOOzsOagQlTa8NoB6C6QGrpavr3IxaYUjZW4ziErV/79llK3NjYagEqtnGH2E2pnhLVhQJ7Cwk+8ZLL5b+Fbnaoo1bKCxBgZ6gGBsVCg/QCmsIw/3og+mCeBX1k7hnOE5StRFpOaC4Rr4s+N6OmDXHrwmysZTF3tghoIN77yJ0MdYi+CnD05fOuBya/fbjSMd5Adv3kt7eZhcI8SrYfWPB1V8Ona+tQxYQOEiwTlhrsJgZ1jFhSYjuOHtQVmkPgcIPLHlPY4WkA+btUZfu6dmcccCnJKEHO1NbfABDiPToMA8RPK+0dSnF3E9EBiQ7zE9kk6/AyvVmEMe+SKOmpSshGFqk9hYyvPyuR4fUcrhoS1Rquc3amfAh/0XPFOovMUpb5rfd9W8KYkghix+OlOgCOJMdCeJIoKrMrZsTeHhpae2+owEAGkeQEDNYeYD3IdnnsErKxGdZYo213q+SlFEaEkj6ZwZGugmA1IQCOlJepGroJSeoK6uAn+ji/JMoHuhAtT2Jmfu6OwWkPXO7Ge9KW3ayrdQ8DTzFRLDSSvyAd7plkuUMn6Otl6MPvNE+LHBdblxUmUGEAUY=
+  - secure: Xew1usV2J90wA9AMh7pFwI24sIQyXfygSVJ/a7Pb5x0EuYO8kxW3g3yvlyTI8SsuI7+BuERXab6Jqwo2FaGrAYgRfu6OSocg3pniy9IHmaalGiKmqfdO15L/6D+glUt0Ar2NuGEdwLlhIyj/G/eD6chHw2/j4bbXEHiCCJLpiW47DzE8aZKHKyvtyf8IG7A4ZMsq27gsieazhDyiVKIFEo3xgGKSBPh86DcM7jhZOINenVnrNLg7pizvcYHRFDyc1lKNEdnxG/r9602Nv4ntBIbTP1TECF5zarSvokd8J3M9DSax2N2d9BEklNxaMEJRh8JrvFVXJRBDqEU2CkR74Mc248AsamklohC9H9SpXu+ne6WYOPJXHeeLVhv0XeUnvbgnY9i/4BKuZZO4Jp+cta0A+2Nc65dWHB66ogBVdpUXZ5eF2WI0VTfHul063/Np/LwYxxwatf/tJO87D48ItPiNqtKdUCtP7g9d7EwRxhOVYJK9m43eq7Ix7F0dkAPim1++wHTU/erkziBKLiFj+KsWLAMthUF0mGdIgggcaVQzVVkZsagSBWmgNDSfGEutkM2juhPJNTNl7tv6lGcZgvUDq3IGIFA2t/evblnTPLE5USWBM0xAIeRC2++HGKD3ttzE0fW4Nt/zjaKj9F5bgsC/WBWJqUX7is07TiuQiFI=
