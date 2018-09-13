@@ -73,6 +73,8 @@ Configures Lambda event sources (triggers) specific to each environment.
 
 ### Process a Lambda Event
 
+A sample `event.json` can be used to test the lambda. (To modify the sample post, edit `./sample-post.json` and run `node scripts/update-event-json`.)
+
 To use `node-lambda` to process the sample API Gateway event in `event.json`, run:
 
 ~~~~
