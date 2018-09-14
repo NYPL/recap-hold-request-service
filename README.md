@@ -12,13 +12,27 @@ This package adheres to [PSR-1](http://www.php-fig.org/psr/psr-1/), [PSR-2](http
 ## Requirements
 
 * Node.js >=6.0
-* PHP >=7.0 
-  * [pdo_pdgsql](http://php.net/manual/en/ref.pdo-pgsql.php)
+* PHP >=7.1
 
 Homebrew is highly recommended for PHP:
-  * `brew install php71`
-  * `brew install php71-pdo-pgsql`
-  
+
+```
+brew install php@7.1
+```
+
+### Troublshooting PHP
+
+If `php -v` reports a version < 7.1 (e.g. 5.x), you may need to correct your path:
+
+```
+echo 'export PATH="/usr/local/opt/php@7.1/sbin:$PATH"' >> ~/.profile
+echo 'export PATH="/usr/local/opt/php@7.1/bin:$PATH"' >> ~/.profile
+source ~/.profile
+```
+
+If `php -v` complains about not finding pdo, you may need to manually remove a deprecated pdo conf, like this one:
+
+`rm /usr/local/etc/php/7.1/conf.d/ext-pdo_pgsql.ini`
 
 ## Installation
 
