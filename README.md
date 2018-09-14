@@ -41,47 +41,43 @@ If `php -v` complains about not finding pdo, you may need to manually remove a d
    * Run `npm install` to install Node.js packages.
    * Run `composer install` to install PHP packages.
    * If you have not already installed `node-lambda` as a global package, run `npm install -g node-lambda`.
-3. Setup [configuration](#configuration) files.
-   * Copy the `.env.sample` file to `.env`.
-   * Copy `config/var_qa.env.sample` to `config/var_qa.env` and `config/var_env.sample` to `config/var_production.env`.
 
 ## Configuration
 
-Various files are used to configure and deploy the Lambda.
+Common configuration is maintained in `./.env`. Deployment-specific configuration is maintained in `./config/var_[environment].env`. Event sources (this app has none) are configured in `./config/event_sources_[environment].json`.
 
-### .env
+## Deployment
 
-`.env` is used *locally* for two purposes:
+Travis CD is enabled for pushes to `origin/development`, `origin/qa`, and `origin/master` (production).
 
-1. By `node-lambda` for deploying to and configuring Lambda in *all* environments. 
-   * You should use this file to configure the common settings for the Lambda 
-   (e.g. timeout, role, etc.) and include AWS credentials to deploy the Lambda. 
-2. To set local environment variables so the Lambda can be run and tested in a local environment.
-   These parameters are ultimately set by the [var environment files](#var_environment) when the Lambda is deployed.
+If you need to manually deploy local code, you can use:
 
-### package.json
+```
+npm run deploy-[environment]
+```
 
-Configures `npm run` deployment commands for each environment and sets the proper AWS Lambda VPC and
-security group.
- 
-~~~~
-"scripts": {
-  "deploy-qa": "node-lambda deploy -e qa -f config/deploy_qa.env -S config/event_sources_qa.json -b subnet-f4fe56af -g sg-1d544067",
-  "deploy-production": "node-lambda deploy -e production -f config/deploy_production.env -S config/event_sources_production.json -b subnet-f4fe56af -g sg-1d544067"
-},
-~~~~
+### For New Deployments: Grant Permission to API Gateway
 
-### var_app
+When deploying to an environment for the first time (e.g. new QA deployment), you'll need to manually grant the API Gateway permission to execute the newly deployed lambda. To determine the command to run:
 
-Configures environment variables common to *all* environments.
+1. Log into relevant AWS Console (i.e. nypl-sandbox for development deploy, nypl-digital-dev for QA/Production)
+1. Browse to API Gateway > Platform > Resources
+1. Browse to `/api/v0.1/recap/hold-requests` POST > Integration Request
+1. Click pencil icon ("Edit") to right of "Lambda Function: RecapHoldRequestService-${stageVariables.environment}"
+1. Without changing anything, click checkmark icon ("Update")
+1. A modal will display titled "Add Permission to Lambda Function and provide a template like the following:
 
-### var_*environment*
+```
+aws lambda add-permission   --function-name "arn:aws:lambda:us-east-1:946183545209:function:RecapHoldRequestService-${stageVariables.environment}"   --source-arn "arn:aws:execute-api:us-east-1:946183545209:ggmsmw0dql/*/POST/api/v0.1/recap/hold-requests"   --principal apigateway.amazonaws.com   --statement-id 969a61fd-1ae9-47f3-b149-481d5011eefb   --action lambda:InvokeFunction
+```
 
-Configures environment variables specific to each environment.
+Modify that by replacing "${stageVariables.environment}" with the relevant environment name (e.g. qa). Also add `--region us-east-1` and relevant `--profile`. For example, authorizing the QA deployment looks like this:
 
-### event_sources_*environment*
+```
+aws lambda add-permission   --function-name "arn:aws:lambda:us-east-1:946183545209:function:RecapHoldRequestService-qa"   --source-arn "arn:aws:execute-api:us-east-1:946183545209:ggmsmw0dql/*/POST/api/v0.1/recap/hold-requests"   --principal apigateway.amazonaws.com   --statement-id 969a61fd-1ae9-47f3-b149-481d5011eefb   --action lambda:InvokeFunction --profile nypl-digital-dev --region us-east-1
+```
 
-Configures Lambda event sources (triggers) specific to each environment.
+Run the resulting command in a shell.
 
 ## Usage
 
@@ -103,7 +99,7 @@ To use the PHP internal web server, run:
 php -S localhost:8888 -t . index.php
 ~~~~
 
-You can then make a request to the Lambda: `http://localhost:8888/api/v0.1/bibs`.
+You can then make a request to the Lambda: `http://localhost:8888/api/v0.1/recap/hold-requests`.
 
 ### Swagger Documentation Generator
 
