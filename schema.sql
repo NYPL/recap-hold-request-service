@@ -6,7 +6,7 @@ CREATE TABLE recap_hold_request (
   patron_barcode TEXT,
   item_barcode TEXT,
   created_date TEXT,
-  update_date TEXT,
+  updated_date TEXT,
   owning_institution_id TEXT, 
   description TEXT
 );
