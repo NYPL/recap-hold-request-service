@@ -1,6 +1,6 @@
 {
   "name": "RecapHoldRequestService",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Lambda for the NYPL ReCAP Hold Request API Service",
   "main": "index.js",
   "scripts": {

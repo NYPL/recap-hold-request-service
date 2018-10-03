@@ -101,6 +101,8 @@ php -S localhost:8888 -t . index.php
 
 You can then make a request to the Lambda: `http://localhost:8888/api/v0.1/recap/hold-requests`.
 
+For running locally properly, you will have to create a database that links to the local server. Use the schema in samples/recap-hold-requests_schema.sql to execute database dump. After that, set the right configurations of DB_CONNECT_STRING, DB_PASSWORD, DB_USERNAME in config/var_app.
+
 ### Event Documentation
 
 For more information on the different scenarios that involve RecapHoldRequestService, see:
