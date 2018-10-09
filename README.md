@@ -101,6 +101,20 @@ php -S localhost:8888 -t . index.php
 
 You can then make a request to the Lambda: `http://localhost:8888/api/v0.1/recap/hold-requests`.
 
+For running locally, you will have to create a database that links to the local server. Use the schema in samples/recap-hold-requests_schema.sql to execute database dump. Replace the [username] placeholder in the file with your user name. After that, set the right configurations of DB_CONNECT_STRING, DB_PASSWORD, DB_USERNAME in config/var_app.
+
+### Event Documentation
+
+For more information on the different scenarios that involve RecapHoldRequestService, see:
+
+* [Diagram of NYPL Request architecture](https://docs.google.com/presentation/d/1Tmb53yOUett1TLclwkUWa-14EOG9dujAyMdLzXOdOVc/edit#slide=id.g330b256cdf_0_0)
+ * [Detailed description of hold request scenarios with reference to above diagram](https://docs.google.com/document/d/1AMqdUlKn5gV6o98JXfD2SjbIUZm04aGKXtupnmvJUN8/edit#heading=h.br4pvk4ymn9s)
+
+ Also useful:
+
+ * [Flow diagram documenting how item & EDD manifest across NYPL & HTC systems](https://docs.google.com/presentation/d/1G9wCyRswefgu4IvN6pn8ntuSVxJ6eEwYDzsdexTfHS8/edit#slide=id.g2a59ba2c93_0_439)
+ * [HTC API wiki](https://htcrecap.atlassian.net/wiki/spaces/RTG/pages/25438542/Request+Item)
+
 ### Swagger Documentation Generator
 
 Create a Swagger route to generate Swagger specification documentation:
