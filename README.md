@@ -50,6 +50,10 @@ Common configuration is maintained in `./.env`. Deployment-specific configuratio
 
 Travis CD is enabled for pushes to `origin/development`, `origin/qa`, and `origin/master` (production).
 
+Deployments (AWS account `nypl-digital-dev`):
+ * Production: Lambda > Functions > RecapHoldRequestService-production
+ * QA: Lambda > Functions > RecapHoldRequestService-qa
+ 
 If you need to manually deploy local code, you can use:
 
 ```
