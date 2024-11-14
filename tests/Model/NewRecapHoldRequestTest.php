@@ -7,7 +7,7 @@ class NewRecapHoldRequestTest extends TestCase
 {
     public $fakeRecapHoldRequest;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->fakeRecapHoldRequest = new class extends NewRecapHoldRequest {
             public function __construct($data = ['owningInstitutionId' => 'PUL'])

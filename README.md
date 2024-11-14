@@ -17,7 +17,7 @@ This package adheres to [PSR-1](http://www.php-fig.org/psr/psr-1/), [PSR-2](http
 Homebrew is highly recommended for PHP:
 
 ```
-brew install php@7.1
+brew install php@8.3
 ```
 
 ### Troublshooting PHP

@@ -12,8 +12,8 @@ use NYPL\Starter\APIException;
 use NYPL\Starter\APILogger;
 use NYPL\Starter\Filter;
 use NYPL\Starter\Model\Response\ErrorResponse;
-use Slim\Http\Request;
-use Slim\Http\Response;
+// use Slim\Http\Request;
+// use Slim\Http\Response;
 
 /**
  * Class RecapHoldRequestController

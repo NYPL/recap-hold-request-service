@@ -5,7 +5,10 @@ use NYPL\Starter\APILogger;
 use NYPL\Starter\Config;
 use NYPL\Starter\Controller;
 use NYPL\Starter\Model\Response\ErrorResponse;
-use Slim\Container;
+use Aura\Di\Container;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 
 /**
  * Class ServiceController

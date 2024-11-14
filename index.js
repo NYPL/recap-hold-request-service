@@ -25,14 +25,11 @@ exports.handler = function(event, context, callback) {
     };
 
     var requestUri = event.path || '';
-    var queryString = '';
 
-    if (event.queryStringParameters) {
-        queryString = querystring.stringify(event.queryStringParameters);
+    var queryString = querystring.stringify(event.queryStringParameters);
 
-        headers['QUERY_STRING'] = queryString;
-        requestUri += '?' + queryString;
-    }
+    headers['QUERY_STRING'] = queryString;
+    requestUri += '?' + queryString;
 
     headers['REQUEST_URI'] = requestUri;
 
@@ -65,15 +62,18 @@ exports.handler = function(event, context, callback) {
     if (process.env.LAMBDA_TASK_ROOT) {
         var php = spawn(
             process.env.LAMBDA_TASK_ROOT + '/php-cgi',
-            ['-n', '-d expose_php=Off', '-d opcache.file_cache=/tmp', '-d zend_extension=' + process.env.LAMBDA_TASK_ROOT + '/lib/opcache.so', 'index.php'],
+            ['-n', '-d expose_php=Off', '-d memory_limit=512M', '-d opcache.file_cache=/tmp', '-d zend_extension=' + process.env.LAMBDA_TASK_ROOT + '/lib/opcache.so', 'index.php'],
             options
         );
     } else {
-        var php = spawn('php-cgi', ['-d expose_php=Off', 'index.php'], options);
+        var php = spawn('php-cgi', ['-d expose_php=Off', '-d memory_limit=512M', 'index.php'], options);
     }
 
     if (php.error) {
-        callback(php.error);
+        callback(null, {
+            statusCode: 500,
+            body: 'Error executing PHP (ERROR: ' + php.stderr.toString() + ')'
+        });
         return false;
     }
 
@@ -81,6 +81,14 @@ exports.handler = function(event, context, callback) {
         php.stderr.toString().split("\n").map(function (message) {
             if (message.trim().length) console.log(message);
         });
+    }
+
+    if (!php.stdout.toString()) {
+        callback(null, {
+            statusCode: 500,
+            body: 'No body returned in response (ERROR: ' + php.stderr.toString() + ')'
+        });
+        return false;
     }
 
     var parsedResponse = parser.parseResponse(php.stdout.toString());
