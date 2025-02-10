@@ -1,3 +1,13 @@
 node_modules
 vendor
-config/var_app
+dist
+*.swp
+config/local.env
+build
+.lambda
+.idea
+supervisord.log
+supervisord.pid
+.DS_Store
+.phpunit.cache
+.phpunit.result.cache
