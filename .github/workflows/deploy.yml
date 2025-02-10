@@ -1,0 +1,60 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - qa
+jobs:
+  deploy-lambda-qa:
+    if: github.ref == 'refs/heads/qa'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "none"
+          extensions: "intl"
+          ini-values: "memory_limit=-1, error_reporting=E_ALL, display_errors=On, zend_extension=xdebug"
+          php-version: "8.3"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: php-actions/composer@v6
+        with:
+          php_version: 8.3
+          version: 2.5.5
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::946183545209:role/GithubActionsDeployerRole
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: PHPUnit
+        run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+      - name: PHPCS
+        run: vendor/bin/phpcs -n --standard=PSR1,PSR2 src/
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: 946183545209.dkr.ecr.us-east-1.amazonaws.com
+          ECR_REPOSITORY: recapHoldRequestService-qa
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:qa-latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:qa-latest
+
+      - name: Update Lambda
+        run: |
+          aws lambda update-function-code --function-name=recapHoldRequestServiceV2-qa --region us-east-1 --image-uri=946183545209.dkr.ecr.us-east-1.amazonaws.com/recapHoldRequestService-qa:qa-latest
