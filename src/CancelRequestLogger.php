@@ -186,7 +186,7 @@ class CancelRequestLogger extends APILogger
      */
     public static function addDebug($error = '', $context = [])
     {
-        self::getLogger()->addDebug(self::formatMessage($error), self::formatContext($context));
+        self::getLogger()->debug(self::formatMessage($error), self::formatContext($context));
 
         return true;
     }

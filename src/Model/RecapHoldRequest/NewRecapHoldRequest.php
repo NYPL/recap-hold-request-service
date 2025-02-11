@@ -5,7 +5,7 @@ use NYPL\Services\Model\RecapHoldRequestModel;
 use NYPL\Starter\Model\ModelTrait\TranslateTrait;
 
 /**
- * @SWG\Definition(title="NewRecapHoldRequest", type="object")
+ * @OA\Schema(title="NewRecapHoldRequest", type="object")
  *
  * @package NYPL\Services\Model\RecapHoldRequest
  */

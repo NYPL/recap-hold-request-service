@@ -14,25 +14,25 @@ abstract class RecapCancelHoldRequestModel extends Model
     use TranslateTrait;
 
     /**
-     * @SWG\Property(example="901bdd1d-bd8f-4310-ba31-7f13a55877fd")
+     * @OA\Property(example="901bdd1d-bd8f-4310-ba31-7f13a55877fd")
      * @var string
      */
     public $trackingId;
 
     /**
-     * @SWG\Property(example="34333000000000")
+     * @OA\Property(example="34333000000000")
      * @var string
      */
     public $itemBarcode;
 
     /**
-     * @SWG\Property(example="23333000000000")
+     * @OA\Property(example="23333000000000")
      * @var string
      */
     public $patronBarcode;
 
     /**
-     * @SWG\Property(example="PUL")
+     * @OA\Property(example="PUL")
      * @var string
      */
     public $owningInstitutionId;

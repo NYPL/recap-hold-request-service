@@ -8,7 +8,7 @@ use NYPL\Starter\Model\ModelTrait\DBCreateTrait;
 use NYPL\Starter\Model\ModelTrait\DBReadTrait;
 
 /**
- * @SWG\Definition(title="RecapHoldRequest", type="object")
+ * @OA\Schema(title="RecapHoldRequest", type="object")
  *
  * @package NYPL\Services\Model\RecapHoldRequest
  */
@@ -17,19 +17,19 @@ class RecapHoldRequest extends NewRecapHoldRequest implements MessageInterface, 
     use DBCreateTrait, DBReadTrait;
 
     /**
-     * @SWG\Property(example="229")
+     * @OA\Property(example="229")
      * @var int
      */
     public $id;
 
     /**
-     * @SWG\Property(example="2016-01-07T02:32:51Z", type="string")
+     * @OA\Property(example="2016-01-07T02:32:51Z", type="string")
      * @var LocalDateTime
      */
     public $createdDate;
 
     /**
-     * @SWG\Property(example="2016-01-07T02:32:51Z", type="string")
+     * @OA\Property(example="2016-01-07T02:32:51Z", type="string")
      * @var LocalDateTime
      */
     public $updatedDate;
