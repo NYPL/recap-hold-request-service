@@ -80,7 +80,6 @@ class RecapHoldRequestController extends ServiceController
             return $this->getJsonResponse(
                 new RecapHoldRequestResponse($recapHoldRequest)
             );
-
         } catch (\Exception $exception) {
             $errorType = 'recap-hold-request-error';
             $errorMsg = 'Unable to process ReCAP hold request. ' . $exception->getMessage();

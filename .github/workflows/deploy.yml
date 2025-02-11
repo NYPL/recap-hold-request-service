@@ -47,7 +47,7 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: 946183545209.dkr.ecr.us-east-1.amazonaws.com
-          ECR_REPOSITORY: recapHoldRequestService-qa
+          ECR_REPOSITORY: recap-hold-request-service-qa
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -57,4 +57,4 @@ jobs:
 
       - name: Update Lambda
         run: |
-          aws lambda update-function-code --function-name=recapHoldRequestServiceV2-qa --region us-east-1 --image-uri=946183545209.dkr.ecr.us-east-1.amazonaws.com/recapHoldRequestService-qa:qa-latest
+          aws lambda update-function-code --function-name=recapHoldRequestServiceV2-qa --region us-east-1 --image-uri=946183545209.dkr.ecr.us-east-1.amazonaws.com/recap-hold-request-service-qa:qa-latest

@@ -21,9 +21,9 @@ class AppContainerBuilder extends ContainerBuilder
      * @return AppContainer
      *
      */
-    public function newInstance(bool $autoResolve = false): AppContainer {
+    public function newInstance(bool $autoResolve = false): AppContainer
+    {
         $resolver = $this->newResolver($autoResolve);
         return new AppContainer(new InjectionFactory($resolver));
     }
-
 }

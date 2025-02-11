@@ -16,25 +16,19 @@ This package adheres to [PSR-1](http://www.php-fig.org/psr/psr-1/), [PSR-2](http
 ## Installation
 
 1. Clone the repo.
-2. Setup [local configuration file](#configuration).
-   * Copy the `config/local.env.dist` file to `config/local.env`.
+2. Copy the `config/local.env.dist` file to `config/local.env`.
 3. Replace values in `config/local.env` with appropriate local, development configuration values.
-   * Add values for AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY using keys generated for your IAM user under the nypl-digital-dev AWS account.
-   * Add values for 
+   * Add values for AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY using keys generated for your IAM user under the 
+nypl-digital-dev AWS account.
 
 ## Configuration
 
-Common configuration is maintained in `./.env`. Deployment-specific configuration is maintained in `./config/[environment].env`.
+Common configuration variables are defined in `config/global.env`. Environment-specific configuration is maintained in 
+`./config/[environment].env`. Secret values for these environments are stored encrypted using AWS KMS encryption.
 
 ## Deployment
 
-Travis CD is enabled for pushes to `origin/development`, `origin/qa`, and `origin/master` (production).
-
-If you need to manually deploy local code, you can use:
-
-```
-npm run deploy-[environment]
-```
+Github Actions is enabled for pushes to `origin/development`, `origin/qa`, and `origin/master` (production). The GHA script is in .github/workflows/deploy.yml
 
 ### For New Deployments: Grant Permission to API Gateway
 
@@ -48,40 +42,45 @@ When deploying to an environment for the first time (e.g. new QA deployment), yo
 1. A modal will display titled "Add Permission to Lambda Function and provide a template like the following:
 
 ```
-aws lambda add-permission   --function-name "arn:aws:lambda:us-east-1:946183545209:function:RecapHoldRequestService-${stageVariables.environment}"   --source-arn "arn:aws:execute-api:us-east-1:946183545209:ggmsmw0dql/*/POST/api/v0.1/recap/hold-requests"   --principal apigateway.amazonaws.com   --statement-id 969a61fd-1ae9-47f3-b149-481d5011eefb   --action lambda:InvokeFunction
+aws lambda add-permission \
+  --function-name "arn:aws:lambda:us-east-1:946183545209:function:RecapHoldRequestServiceV2-${stageVariables.environment}:current" \
+  --source-arn "arn:aws:execute-api:us-east-1:946183545209:ggmsmw0dql/*/POST/api/v0.1/recap/hold-requests" \
+  --principal apigateway.amazonaws.com \
+  --statement-id 969a61fd-1ae9-47f3-b149-481d5011eefb \
+  --action lambda:InvokeFunction  
 ```
 
 Modify that by replacing "${stageVariables.environment}" with the relevant environment name (e.g. qa). Also add `--region us-east-1` and relevant `--profile`. For example, authorizing the QA deployment looks like this:
 
 ```
-aws lambda add-permission   --function-name "arn:aws:lambda:us-east-1:946183545209:function:RecapHoldRequestService-qa"   --source-arn "arn:aws:execute-api:us-east-1:946183545209:ggmsmw0dql/*/POST/api/v0.1/recap/hold-requests"   --principal apigateway.amazonaws.com   --statement-id 969a61fd-1ae9-47f3-b149-481d5011eefb   --action lambda:InvokeFunction --profile nypl-digital-dev --region us-east-1
+aws lambda add-permission \
+  --function-name "arn:aws:lambda:us-east-1:946183545209:function:RecapHoldRequestServiceV2-qa:current" \
+  --source-arn "arn:aws:execute-api:us-east-1:946183545209:ggmsmw0dql/*/POST/api/v0.1/recap/hold-requests" \
+  --principal apigateway.amazonaws.com \
+  --statement-id 969a61fd-1ae9-47f3-b149-481d5011eefb \
+  --action lambda:InvokeFunction \
+  --region us-east-1 \
+  --profile nypl-digital-dev
 ```
 
 Run the resulting command in a shell.
 
 ## Usage
 
-### Process a Lambda Event
-
-A sample `event.json` can be used to test the lambda. (To modify the sample post, edit `./sample-post.json` and run `node scripts/update-event-json`.)
-
-To use `node-lambda` to process the sample API Gateway event in `event.json`, run:
-
-~~~~
-node-lambda run
-~~~~
-
 ### Run as a Web Server
 
-To use the PHP internal web server, run:
+We use Docker Compose to provide a local development environment. See docker-compose.yml. The base image is the Bref 
+PHP 8.3 FPM Docker Image, which provides a PHP runtime for Lambda. To start the PHP development server, run:
 
 ~~~~
-php -S localhost:8888 -t . index.php
+docker compose up --build
 ~~~~
 
-You can then make a request to the Lambda: `http://localhost:8888/api/v0.1/recap/hold-requests`.
+You can then make requests to the Lambda at localhost:8000, (e.g. `http://localhost:8000/api/v0.1/recap/hold-requests`).
 
-For running locally, you will have to create a database that links to the local server. Use the schema in samples/recap-hold-requests_schema.sql to execute database dump. Replace the [username] placeholder in the file with your user name. After that, set the right configurations of DB_CONNECT_STRING, DB_PASSWORD, DB_USERNAME in config/local.env.
+The docker-compose.yml file also defines a container for a local Postgres database. The first time it is built, it 
+will import the schema at `samples/recap-hold-requests_schema.sql`. The local.env.dist file has the required DB 
+variables defined for use with this local db.
 
 ### Event Documentation
 
@@ -95,10 +94,34 @@ For more information on the different scenarios that involve RecapHoldRequestSer
  * [Flow diagram documenting how item & EDD manifest across NYPL & HTC systems](https://docs.google.com/presentation/d/1G9wCyRswefgu4IvN6pn8ntuSVxJ6eEwYDzsdexTfHS8/edit#slide=id.g2a59ba2c93_0_439)
  * [HTC API wiki](https://htcrecap.atlassian.net/wiki/spaces/RTG/pages/25438542/Request+Item)
 
-### Swagger Documentation Generator
 
-Create a Swagger route to generate Swagger specification documentation:
+### Swagger Documentation
 
-~~~~
-$service->get("/swagger", SwaggerGenerator::class);
-~~~~
+Swagger documentation exists at `/docs/recap-hold-requests`. This endpoint is used by platformdocs.nypl.org to get
+schemas and data samples to present as documentation for developers and to help with API testings. Metadata for swagger
+is defined in docblocks throughout the codebase, wherever you see the @OA tag.
+
+Note: This codebase was upgraded to use Swagger 3.x and may produce errors on platformdocs until it is also upgraded.
+
+## Git Workflow & Deployment
+
+### Git Workflow
+
+We follow a [feature-branch](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
+workflow. Our branches, ordered from least-stable to most stable are:
+
+| branch                                                                                                                                                                                | tier        | AWS account      |
+|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------|:-----------------|
+| `qa` [![Build Status](https://github.com/NYPL/recap-hold-request-service/actions/workflows/deploy.yml/badge.svg?branch=qa)](https://github.com/NYPL-discovery/itemservice/actions)         | qa          | nypl-digital-dev |
+| `master` [![Build Status](https://github.com/NYPL-discovery/itemservice/actions/workflows/deploy.yml/badge.svg?branch=master)](https://github.com/NYPL/recap-hold-request-service/actions) | production  | nypl-digital-dev |
+
+Cut feature branches off of, and file PRs into `development`. Merge `development` => `qa` & `qa` => `master`.
+
+### Deployment
+
+*@todo - Add production branch deployment to deploy.yml.*
+
+The application is hosted on AWS Lambda. Upon pushing a change to the `qa` or `production` branches, the Github Actions
+script `.github/workflows/deploy.yml` will be run on Github. This script will run Unit tests and PHP Code Sniffer, build
+the Docker container as defined by `Dockerfile`, push the image to ECR, and finally, update the Lambda function to pull
+in the new image.
