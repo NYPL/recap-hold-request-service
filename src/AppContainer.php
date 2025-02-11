@@ -25,17 +25,4 @@ class AppContainer extends DefaultContainer
         parent::__construct($injectionFactory, $delegateContainer);
         $this->settings["displayErrorDetails"] = true;
     }
-
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @return void
-     * @throws \Aura\Di\Exception\ContainerLocked
-     * @throws \Aura\Di\Exception\ServiceNotObject
-     */
-    public function initServices(Request $request, Response $response) {
-        $this->set('request', $request);
-        $this->set('response', $response);
-    }
-
 }

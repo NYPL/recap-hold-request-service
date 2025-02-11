@@ -165,15 +165,4 @@ class ServiceController extends Controller
             )
         )->withStatus(400);
     }
-
-    /**
-     * @param $data
-     * @return Response
-     */
-    public function getJsonResponse($data): Response
-    {
-        $json = json_encode($data);
-        $streamBody = fopen('data://text/plain,' . $json, 'r');
-        return $this->getResponse()->withBody(new Stream($streamBody));
-    }
 }
