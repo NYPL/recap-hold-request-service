@@ -14,14 +14,14 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -41,7 +41,7 @@ CREATE SEQUENCE recap_cancel_hold_request_id_seq
     CACHE 1;
 
 
-ALTER TABLE recap_cancel_hold_request_id_seq OWNER TO postgres;
+ALTER TABLE recap_cancel_hold_request_id_seq OWNER TO recap_hold_requests;
 
 SET default_tablespace = '';
 
@@ -65,7 +65,7 @@ CREATE TABLE recap_cancel_hold_request (
 );
 
 
-ALTER TABLE recap_cancel_hold_request OWNER TO postgres;
+ALTER TABLE recap_cancel_hold_request OWNER TO recap_hold_requests;
 
 --
 -- Name: recap_hold_request_id_seq; Type: SEQUENCE; Schema: public; Owner:
@@ -79,7 +79,7 @@ CREATE SEQUENCE recap_hold_request_id_seq
     CACHE 1;
 
 
-ALTER TABLE recap_hold_request_id_seq OWNER TO postgres;
+ALTER TABLE recap_hold_request_id_seq OWNER TO recap_hold_requests;
 
 --
 -- Name: recap_hold_request; Type: TABLE; Schema: public; Owner:
@@ -97,7 +97,7 @@ CREATE TABLE recap_hold_request (
 );
 
 
-ALTER TABLE recap_hold_request OWNER TO postgres;
+ALTER TABLE recap_hold_request OWNER TO recap_hold_requests;
 
 --
 -- Name: recap_hold_request_id_pkey; Type: SEQUENCE; Schema: public; Owner:
@@ -111,7 +111,7 @@ CREATE SEQUENCE recap_hold_request_id_pkey
     CACHE 1;
 
 
-ALTER TABLE recap_hold_request_id_pkey OWNER TO postgres;
+ALTER TABLE recap_hold_request_id_pkey OWNER TO recap_hold_requests;
 
 --
 -- Name: recap_cancel_hold_request_id_key; Type: CONSTRAINT; Schema: public; Owner:
@@ -165,7 +165,7 @@ CREATE INDEX recap_hold_request_ids_idx ON recap_hold_request USING btree (id, t
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO recap_hold_requests;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
@@ -175,7 +175,7 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 
 REVOKE ALL ON SEQUENCE recap_cancel_hold_request_id_seq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE recap_cancel_hold_request_id_seq FROM postgres;
-GRANT ALL ON SEQUENCE recap_cancel_hold_request_id_seq TO postgres;
+GRANT ALL ON SEQUENCE recap_cancel_hold_request_id_seq TO recap_hold_requests;
 
 
 --
@@ -184,7 +184,7 @@ GRANT ALL ON SEQUENCE recap_cancel_hold_request_id_seq TO postgres;
 
 REVOKE ALL ON TABLE recap_cancel_hold_request FROM PUBLIC;
 REVOKE ALL ON TABLE recap_cancel_hold_request FROM postgres;
-GRANT ALL ON TABLE recap_cancel_hold_request TO postgres;
+GRANT ALL ON TABLE recap_cancel_hold_request TO recap_hold_requests;
 
 
 --
@@ -193,7 +193,7 @@ GRANT ALL ON TABLE recap_cancel_hold_request TO postgres;
 
 REVOKE ALL ON SEQUENCE recap_hold_request_id_seq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE recap_hold_request_id_seq FROM postgres;
-GRANT ALL ON SEQUENCE recap_hold_request_id_seq TO postgres;
+GRANT ALL ON SEQUENCE recap_hold_request_id_seq TO recap_hold_requests;
 
 
 --
@@ -202,7 +202,7 @@ GRANT ALL ON SEQUENCE recap_hold_request_id_seq TO postgres;
 
 REVOKE ALL ON TABLE recap_hold_request FROM PUBLIC;
 REVOKE ALL ON TABLE recap_hold_request FROM postgres;
-GRANT ALL ON TABLE recap_hold_request TO postgres;
+GRANT ALL ON TABLE recap_hold_request TO recap_hold_requests;
 
 
 --
