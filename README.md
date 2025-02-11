@@ -11,40 +11,20 @@ This package adheres to [PSR-1](http://www.php-fig.org/psr/psr-1/), [PSR-2](http
 
 ## Requirements
 
-* Node.js >=6.0
-* PHP >=7.1
-
-Homebrew is highly recommended for PHP:
-
-```
-brew install php@8.3
-```
-
-### Troublshooting PHP
-
-If `php -v` reports a version < 7.1 (e.g. 5.x), you may need to correct your path:
-
-```
-echo 'export PATH="/usr/local/opt/php@7.1/sbin:$PATH"' >> ~/.profile
-echo 'export PATH="/usr/local/opt/php@7.1/bin:$PATH"' >> ~/.profile
-source ~/.profile
-```
-
-If `php -v` complains about not finding pdo, you may need to manually remove a deprecated pdo conf, like this one:
-
-`rm /usr/local/etc/php/7.1/conf.d/ext-pdo_pgsql.ini`
+* Docker >= v27
 
 ## Installation
 
 1. Clone the repo.
-2. Install required dependencies.
-   * Run `npm install` to install Node.js packages.
-   * Run `composer install` to install PHP packages.
-   * If you have not already installed `node-lambda` as a global package, run `npm install -g node-lambda`.
+2. Setup [local configuration file](#configuration).
+   * Copy the `config/local.env.dist` file to `config/local.env`.
+3. Replace values in `config/local.env` with appropriate local, development configuration values.
+   * Add values for AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY using keys generated for your IAM user under the nypl-digital-dev AWS account.
+   * Add values for 
 
 ## Configuration
 
-Common configuration is maintained in `./.env`. Deployment-specific configuration is maintained in `./config/var_[environment].env`. Event sources (this app has none) are configured in `./config/event_sources_[environment].json`.
+Common configuration is maintained in `./.env`. Deployment-specific configuration is maintained in `./config/[environment].env`.
 
 ## Deployment
 
@@ -101,7 +81,7 @@ php -S localhost:8888 -t . index.php
 
 You can then make a request to the Lambda: `http://localhost:8888/api/v0.1/recap/hold-requests`.
 
-For running locally, you will have to create a database that links to the local server. Use the schema in samples/recap-hold-requests_schema.sql to execute database dump. Replace the [username] placeholder in the file with your user name. After that, set the right configurations of DB_CONNECT_STRING, DB_PASSWORD, DB_USERNAME in config/var_app.
+For running locally, you will have to create a database that links to the local server. Use the schema in samples/recap-hold-requests_schema.sql to execute database dump. Replace the [username] placeholder in the file with your user name. After that, set the right configurations of DB_CONNECT_STRING, DB_PASSWORD, DB_USERNAME in config/local.env.
 
 ### Event Documentation
 
