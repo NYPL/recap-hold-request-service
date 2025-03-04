@@ -61,6 +61,6 @@ jobs:
       - name: Update Lambda
         env:
           LAMBDA_FUNCTION_NAME: RecapHoldRequestServiceV2
-          ECR_URI: 946183545209.dkr.ecr.us-east-1.amazonaws.com/recap-hold-request-service-
+          ECR_URI: 946183545209.dkr.ecr.us-east-1.amazonaws.com/recap-hold-request-service
         run: |
           aws lambda update-function-code --function-name=$LAMBDA_FUNCTION_NAME-$BRANCH_NAME --region us-east-1 --image-uri=$ECR_URI:$BRANCH_NAME-latest
