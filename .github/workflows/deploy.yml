@@ -53,10 +53,10 @@ jobs:
           ECR_REPOSITORY: recap-hold-request-service
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY-$BRANCH_NAME:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY-$BRANCH_NAME:$IMAGE_TAG
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY-$BRANCH_NAME:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_NAME-latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY-$BRANCH_NAME:$BRANCH_NAME-latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_NAME-latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_NAME-latest
 
       - name: Update Lambda
         env:
