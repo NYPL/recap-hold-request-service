@@ -1,11 +1,14 @@
 <?php
 namespace NYPL\Services;
 
+use Aura\Di\Exception\ServiceNotFound;
+use GuzzleHttp\Psr7\Stream;
 use NYPL\Starter\APILogger;
 use NYPL\Starter\Config;
 use NYPL\Starter\Controller;
 use NYPL\Starter\Model\Response\ErrorResponse;
-use Slim\Container;
+use Aura\Di\Container;
+use Psr\Http\Message\ResponseInterface as Response;
 
 /**
  * Class ServiceController
@@ -28,24 +31,23 @@ class ServiceController extends Controller
     /**
      * @var Container
      */
-    public $container;
+    public Container $container;
 
     /**
      * Controller constructor.
      *
-     * @param \Slim\Container $container
-     * @param int             $cacheSeconds
+     * @param Container $container
+     * @param int $cacheSeconds
+     * @throws ServiceNotFound|\NYPL\Starter\APIException
      */
     public function __construct(Container $container, int $cacheSeconds = 0)
     {
-        $this->setUseJobService(Config::get('USE_JOB_SERVICE'));
+        $this->setContainer($container);
+        $this->setUseJobService(Config::get('USE_JOB_SERVICE') ?? false);
         $this->setResponse($container->get('response'));
         $this->setRequest($container->get('request'));
-
         $this->addCacheHeader($cacheSeconds);
-
         $this->initializeContentType();
-
         $this->initializeIdentityHeader();
 
         parent::__construct($this->request, $this->response, $cacheSeconds);
@@ -136,11 +138,11 @@ class ServiceController extends Controller
 
     /**
      * @param \Exception $exception
-     * @return \Slim\Http\Response
+     * @return Response
      */
     public function invalidScopeResponse(\Exception $exception)
     {
-        return $this->getResponse()->withJson(
+        return $this->getJsonResponse(
             new ErrorResponse(
                 '403',
                 'invalid-scope',
@@ -151,11 +153,11 @@ class ServiceController extends Controller
 
     /**
      * @param \Exception $exception
-     * @return \Slim\Http\Response
+     * @return Response
      */
     public function invalidRequestResponse(\Exception $exception)
     {
-        return $this->getResponse()->withJson(
+        return $this->getJsonResponse(
             new ErrorResponse(
                 '400',
                 'invalid-request',

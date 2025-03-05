@@ -1,0 +1,66 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - TGR-114/remediation-update
+      - qa
+      - production
+jobs:
+  deploy-lambda:
+    env:
+      BRANCH_NAME: ${{ github.ref_name == 'production' && 'production' || 'qa' }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "none"
+          extensions: "intl"
+          ini-values: "memory_limit=-1, error_reporting=E_ALL, display_errors=On, zend_extension=xdebug"
+          php-version: "8.3"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: php-actions/composer@v6
+        with:
+          php_version: 8.3
+          version: 2.5.5
+
+      - name: PHPUnit
+        run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+      - name: PHPCS
+        run: vendor/bin/phpcs -n --standard=PSR1,PSR2 src/
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::946183545209:role/GithubActionsDeployerRole
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: recap-hold-request-service
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_NAME-latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$BRANCH_NAME-latest
+
+      - name: Update Lambda
+        env:
+          LAMBDA_FUNCTION_NAME: RecapHoldRequestServiceV2
+          ECR_URI: 946183545209.dkr.ecr.us-east-1.amazonaws.com/recap-hold-request-service
+        run: |
+          aws lambda update-function-code --function-name=$LAMBDA_FUNCTION_NAME-$BRANCH_NAME --region us-east-1 --image-uri=$ECR_URI:$BRANCH_NAME-latest

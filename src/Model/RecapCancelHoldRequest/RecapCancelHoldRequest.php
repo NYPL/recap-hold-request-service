@@ -13,7 +13,7 @@ use NYPL\Starter\Model\ModelTrait\DBReadTrait;
 use NYPL\Starter\Model\ModelTrait\DBUpdateTrait;
 
 /**
- * @SWG\Definition(title="RecapCancelHoldRequest", type="object")
+ * @OA\Schema(title="RecapCancelHoldRequest", type="object")
  *
  * @package NYPL\Services\Model\RecapCancelHoldRequest
  */
@@ -22,37 +22,37 @@ class RecapCancelHoldRequest extends NewRecapCancelHoldRequest implements Messag
     use DBCreateTrait, DBReadTrait, DBUpdateTrait;
 
     /**
-     * @SWG\Property(example="229")
+     * @OA\Property(example="229")
      * @var int
      */
     public $id;
 
     /**
-     * @SWG\Property(example="991873slx938")
+     * @OA\Property(example="991873slx938")
      * @var string
      */
     public $jobId;
 
     /**
-     * @SWG\Property(example=true)
+     * @OA\Property(example=true)
      * @var bool
      */
     public $processed;
 
     /**
-     * @SWG\Property(example=false)
+     * @OA\Property(example=false)
      * @var bool
      */
     public $success;
 
     /**
-     * @SWG\Property(example="2016-01-07T02:32:51Z", type="string")
+     * @OA\Property(example="2016-01-07T02:32:51Z", type="string")
      * @var LocalDateTime
      */
     public $createdDate;
 
     /**
-     * @SWG\Property(example="2016-01-07T02:32:51Z", type="string")
+     * @OA\Property(example="2016-01-07T02:32:51Z", type="string")
      * @var LocalDateTime
      */
     public $updatedDate;

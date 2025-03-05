@@ -5,7 +5,7 @@ use NYPL\Starter\Model;
 use NYPL\Starter\Model\ModelTrait\TranslateTrait;
 
 /**
- * @SWG\Definition(title="ItemDescription", type="object")
+ * @OA\Schema(title="ItemDescription", type="object")
  *
  * @package NYPL\Services\Model
  */
@@ -14,19 +14,19 @@ class ItemDescription extends Model
     use TranslateTrait;
 
     /**
-     * @SWG\Property(example="[In Library Use] REFLECTIONS OF CARTIER : THE ART DECO YEARS : NEW YORK EXHIBITION. [RECAP]")
+     * @OA\Property(example="[In Library Use] REFLECTIONS OF CARTIER : THE ART DECO YEARS : NEW YORK EXHIBITION. [RECAP]")
      * @var string
      */
     public $title;
 
     /**
-     * @SWG\Property(example="Cartier, Louis, 1875-1942.   ")
+     * @OA\Property(example="Cartier, Louis, 1875-1942.   ")
      * @var string
      */
     public $author;
 
     /**
-     * @SWG\Property(example="|hJAX C-3278")
+     * @OA\Property(example="|hJAX C-3278")
      * @var string
      */
     public $callNumber;

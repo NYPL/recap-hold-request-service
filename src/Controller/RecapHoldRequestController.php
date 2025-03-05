@@ -1,6 +1,7 @@
 <?php
 namespace NYPL\Services\Controller;
 
+use Exception;
 use NYPL\Services\CancelRequestLogger;
 use NYPL\Services\JobService;
 use NYPL\Services\ServiceController;
@@ -12,49 +13,54 @@ use NYPL\Starter\APIException;
 use NYPL\Starter\APILogger;
 use NYPL\Starter\Filter;
 use NYPL\Starter\Model\Response\ErrorResponse;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Class RecapHoldRequestController
  *
  * @package NYPL\Services\Controller
  */
+
+
+/**
+ * @OA\Info(title="RecapHoldRequestController", version="1")
+ */
 class RecapHoldRequestController extends ServiceController
 {
+
     /**
-     * @SWG\Post(
+     * @OA\Post(
      *     path="/v0.1/recap/hold-requests",
      *     summary="Create a new ReCAP hold request",
      *     tags={"recap-hold-requests"},
      *     operationId="createRecapHoldRequest",
-     *     consumes={"application/json"},
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="NewRecapHoldRequest",
-     *         in="body",
-     *         description="",
+     *     @OA\RequestBody(
      *         required=true,
-     *         @SWG\Schema(ref="#/definitions/NewRecapHoldRequest")
+     *         description="NewRecapHoldRequest",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/NewRecapHoldRequest")
+     *         ),
      *     ),
-     *     @SWG\Response(
+     *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @SWG\Schema(ref="#/definitions/RecapHoldRequestResponse")
+     *         @OA\Schema(ref="#/components/schemas/RecapHoldRequestResponse")
      *     ),
-     *     @SWG\Response(
+     *     @OA\Response(
      *         response="401",
      *         description="Unauthorized"
      *     ),
-     *     @SWG\Response(
+     *     @OA\Response(
      *         response="404",
      *         description="Not found",
-     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
+     *         @OA\Schema(ref="#/components/schemas/ErrorResponse")
      *     ),
-     *     @SWG\Response(
+     *     @OA\Response(
      *         response="500",
      *         description="Generic server error",
-     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
+     *         @OA\Schema(ref="#/components/schemas/ErrorResponse")
      *     ),
      *     security={
      *         {
@@ -62,9 +68,6 @@ class RecapHoldRequestController extends ServiceController
      *         }
      *     }
      * )
-     *
-     * @return Response
-     * @throws APIException
      */
     public function createRecapHoldRequest()
     {
@@ -74,7 +77,7 @@ class RecapHoldRequestController extends ServiceController
             APILogger::addInfo('Processing hold request from ReCAP', ['Request ID' => $data['trackingId']]);
             $recapHoldRequest->create();
 
-            return $this->getResponse()->withJson(
+            return $this->getJsonResponse(
                 new RecapHoldRequestResponse($recapHoldRequest)
             );
         } catch (\Exception $exception) {
@@ -86,34 +89,33 @@ class RecapHoldRequestController extends ServiceController
     }
 
     /**
-     * @SWG\Post(
+     * @OA\Post(
      *     path="/v0.1/recap/cancel-hold-requests",
      *     summary="Cancel a ReCAP hold request",
      *     tags={"recap-hold-requests"},
      *     operationId="cancelRecapHoldRequest",
-     *     consumes={"application/json"},
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="NewRecapCancelHoldRequest",
-     *         in="body",
-     *         description="",
+     *     @OA\RequestBody(
      *         required=true,
-     *         @SWG\Schema(ref="#/definitions/NewRecapCancelHoldRequest")
+     *         description="NewRecapCancelHoldRequest",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/NewRecapCancelHoldRequest")
+     *         ),
      *     ),
-     *     @SWG\Response(
+     *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @SWG\Schema(ref="#/definitions/RecapCancelHoldRequestResponse")
+     *         @OA\Schema(ref="#/components/schemas/RecapCancelHoldRequestResponse")
      *     ),
-     *     @SWG\Response(
+     *     @OA\Response(
      *         response="404",
      *         description="Not found",
-     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
+     *         @OA\Schema(ref="#/components/schemas/ErrorResponse")
      *     ),
-     *     @SWG\Response(
+     *     @OA\Response(
      *         response="500",
      *         description="Generic server error",
-     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
+     *         @OA\Schema(ref="#/components/schemas/ErrorResponse")
      *     ),
      *     security={
      *         {
@@ -123,7 +125,6 @@ class RecapHoldRequestController extends ServiceController
      * )
      *
      * @return Response
-     * @throws APIException
      */
     public function cancelRecapHoldRequest()
     {
@@ -147,7 +148,7 @@ class RecapHoldRequestController extends ServiceController
                 );
             }
 
-            return $this->getResponse()->withJson(
+            return $this->getJsonResponse(
                 new RecapCancelHoldRequestResponse($recapCancelHoldRequest)
             );
         } catch (\Exception $exception) {
@@ -159,41 +160,40 @@ class RecapHoldRequestController extends ServiceController
     }
 
     /**
-     * @SWG\Patch(
+     * @OA\Patch(
      *     path="/v0.1/recap/cancel-hold-requests/{id}",
      *     summary="Update a ReCAP cancel hold request",
      *     tags={"recap-hold-requests"},
      *     operationId="updateCancelRecapHoldRequest",
-     *     consumes={"application/json"},
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         description="ID of ReCAP cancel hold request",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="RecapCancelHoldRequest",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(ref="#/components/schemas/RecapCancelHoldRequest")
+     *         ),
+     *     ),
+     *     @OA\Parameter(
+     *         description="ID of ReCAP cancel hold request",     *
      *         in="path",
      *         name="id",
      *         required=true,
-     *         type="string",
-     *         format="string"
+     *         @OA\Schema(type="string", format="string")
      *     ),
-     *     @SWG\Parameter(
-     *         name="RecapCancelHoldRequest",
-     *         in="body",
-     *         required=true,
-     *         @SWG\Schema(ref="#/definitions/RecapCancelHoldRequest")
-     *     ),
-     *     @SWG\Response(
+     *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @SWG\Schema(ref="#/definitions/RecapCancelHoldRequestResponse")
+     *         @OA\Schema(ref="#/components/schemas/RecapCancelHoldRequestResponse")
      *     ),
-     *     @SWG\Response(
+     *     @OA\Response(
      *         response="404",
      *         description="Not found",
-     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
+     *         @OA\Schema(ref="#/components/schemas/ErrorResponse")
      *     ),
-     *     @SWG\Response(
+     *     @OA\Response(
      *         response="500",
      *         description="Generic server error",
-     *         @SWG\Schema(ref="#/definitions/ErrorResponse")
+     *         @OA\Schema(ref="#/components/schemas/ErrorResponse")
      *     ),
      *     security={
      *         {
@@ -202,21 +202,19 @@ class RecapHoldRequestController extends ServiceController
      *     }
      * )
      *
-     * @param Request $request
-     * @param Response $response
      * @param array $args
      *
      * @return Response
      */
-    public function updateCancelRecapHoldRequest(Request $request, Response $response, array $args)
+    public function updateCancelRecapHoldRequest(array $args)
     {
         try {
             $data = $this->getRequest()->getParsedBody();
 
             $recapCancelHoldRequest = new RecapCancelHoldRequest();
 
-            CancelRequestLogger::addDebug('Raw PATCH request sent.', [(string)$request->getUri(), $request->getParsedBody()]);
-            CancelRequestLogger::addDebug('PATCH request sent.', [(string)$request->getUri(), $data]);
+            CancelRequestLogger::addDebug('Raw PATCH request sent.', [(string)$this->getRequest()->getUri(), $this->getRequest()->getParsedBody()]);
+            CancelRequestLogger::addDebug('PATCH request sent.', [(string)$this->getRequest()->getUri(), $data]);
 
             try {
                 $recapCancelHoldRequest->validatePatchData((array)$data);
@@ -241,27 +239,27 @@ class RecapHoldRequestController extends ServiceController
 
             CancelRequestLogger::addDebug(
                 'PATCH response',
-                (array)$this->getResponse()->withJson(new RecapCancelHoldRequestResponse($recapCancelHoldRequest))
+                (array)$this->getJsonResponse(new RecapCancelHoldRequestResponse($recapCancelHoldRequest))
             );
 
-            return $this->getResponse()->withJson(new RecapCancelHoldRequestResponse($recapCancelHoldRequest));
+            return $this->getJsonResponse(new RecapCancelHoldRequestResponse($recapCancelHoldRequest));
         } catch (\Exception $exception) {
             CancelRequestLogger::addDebug('Exception thrown.', [$exception->getMessage()]);
             $errorType = 'update-cancel-recap-hold-request-error';
             $errorMsg = 'Unable to update canceled recap hold request.';
 
-            return $this->processException($errorType, $errorMsg, $exception, $request);
+            return $this->processException($errorType, $errorMsg, $exception, $this->getRequest());
         }
     }
 
     /**
-     * @param string     $errorType
-     * @param string     $errorMessage
+     * @param string $errorType
+     * @param string $errorMessage
      * @param \Exception $exception
      * @param Request    $request
-     * @return \Slim\Http\Response
+     * @return Response
      */
-    protected function processException($errorType, $errorMessage, \Exception $exception, Request $request)
+    protected function processException(string $errorType, string $errorMessage, Exception $exception, Request $request): Response
     {
         $statusCode = 500;
         if ($exception instanceof APIException) {
@@ -293,6 +291,6 @@ class RecapHoldRequestController extends ServiceController
             $exception
         );
 
-        return $this->getResponse()->withJson($errorResp)->withStatus($statusCode);
+        return $this->getJsonResponse($errorResp)->withStatus($statusCode);
     }
 }

@@ -1,0 +1,28 @@
+services:
+  app:
+    image: bref/php-83-fpm-dev:latest
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/var/task
+    env_file:
+      - ./config/local.env
+    environment:
+      HANDLER: index.php
+      DOCUMENT_ROOT: .
+      PHP_EXTENSION_DEBUG: 1
+      ENVIRONMENT: local
+    links:
+      - db
+  db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: recap_hold_requests
+      POSTGRES_USER: recap_hold_requests
+      POSTGRES_DB: recap_hold_requests
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./samples/recap-hold-requests_schema.sql:/docker-entrypoint-initdb.d/init.sql

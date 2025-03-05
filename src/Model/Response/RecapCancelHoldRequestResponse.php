@@ -5,14 +5,14 @@ use NYPL\Services\Model\RecapCancelHoldRequest\RecapCancelHoldRequest;
 use NYPL\Starter\Model\Response\SuccessResponse;
 
 /**
- * @SWG\Definition(title="RecapCancelHoldRequestResponse", type="object")
+ * @OA\Schema(title="RecapCancelHoldRequestResponse", type="object")
  *
- * @param NYPL\Services\Model\Response
+ * @package NYPL\Services\Model\Response
  */
 class RecapCancelHoldRequestResponse extends SuccessResponse
 {
     /**
-     * @SWG\Property
+     * @OA\Property
      * @var RecapCancelHoldRequest
      */
     public $data;
